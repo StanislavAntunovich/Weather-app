@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Weather App</string>
+
+    <string name="cloudy">Облачно</string>
+    <string name="partly_cloudy">Переменная Облачность</string>
+    <string name="sunny">Солнечно</string>
+    <string name="rainy">Дождь</string>
+    <string name="windy">Ветрено</string>
+    <string name="snowy">Снег</string>
+
+    <string name="humidity">Влажность</string>
+    <string name="pressure">Давление</string>
+    <string name="wind">Ветер</string>
+
+    <!--images description-->
+    <string name="desc_weather_icon">значек текущей погоды</string>
+    <string name="desc_humidity_icon">значек влажности</string>
+    <string name="desc_pressure_icon">значек давления</string>
+    <string name="desc_wind_icon">значек ветра</string>
+
+    <!--temp vals-->
+    <string name="pressure_val">995мм</string>
+    <string name="humidity_val">20%</string>
+    <string name="moscow">Москва</string>
+    <string name="date_val">Суббота, 6 Июля</string>
+    <string name="temperature_val">19°</string>
+    <string name="wind_val">4км/ч</string>
+    <string name="day_val">Воскресенье</string>
+
+</resources>

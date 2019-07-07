@@ -1,3 +1,30 @@
 <resources>
-    <string name="app_name">Android1</string>
+    <string name="app_name">Weather App</string>
+
+    <string name="cloudy">Cloudy</string>
+    <string name="partly_cloudy">Partly Cloudy</string>
+    <string name="sunny">Sunny</string>
+    <string name="rainy">Rainy</string>
+    <string name="windy">Windy</string>
+    <string name="snowy">Snowy</string>
+
+    <string name="humidity">Humidity</string>
+    <string name="pressure">Pressure</string>
+    <string name="wind">Wind</string>
+
+    <!--images description-->
+    <string name="desc_weather_icon">current weather icon</string>
+    <string name="desc_humidity_icon">humidity icon</string>
+    <string name="desc_pressure_icon">pressure icon</string>
+    <string name="desc_wind_icon">wind icon</string>
+
+    <!--temp values-->
+    <string name="pressure_val">995mm</string>
+    <string name="moscow">Moscow</string>
+    <string name="humidity_val">20%</string>
+    <string name="date_val">Saturday, July 6</string>
+    <string name="temperature_val">19°</string>
+    <string name="wind_val">4km/h</string>
+    <string name="day_val">Sunday</string>
+
 </resources>
