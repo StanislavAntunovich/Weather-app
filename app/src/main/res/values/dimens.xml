@@ -4,7 +4,10 @@
     <dimen name="icon_weather_size">80dp</dimen>
     <dimen name="text_secondary">25sp</dimen>
     <dimen name="text_details">22sp</dimen>
+    <dimen name="text_city_details">18sp</dimen>
     <dimen name="temperature_main">60sp</dimen>
     <dimen name="padding_8">8dp</dimen>
     <dimen name="margin_16">16dp</dimen>
+    <dimen name="margin_start">16dp</dimen>
+    <dimen name="margin_end">16dp</dimen>
 </resources>
