@@ -26,5 +26,17 @@
     <string name="temperature_val">19°</string>
     <string name="wind_val">4km/h</string>
     <string name="day_val">Sunday</string>
+    <string name="done">Done</string>
+    <string name="city">City</string>
+
+    <string-array name="cities">
+        <item>Moscow</item>
+        <item>Saint-Petersburg</item>
+        <item>Ryazan</item>
+        <item>Novosibirsk</item>
+        <item>Vyborg</item>
+        <item>Novgorod</item>
+        <item>Murmansk</item>
+    </string-array>
 
 </resources>
