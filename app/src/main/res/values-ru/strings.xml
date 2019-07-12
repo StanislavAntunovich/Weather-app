@@ -20,13 +20,15 @@
     <string name="desc_wind_icon">значек ветра</string>
 
     <!--temp vals-->
-    <string name="pressure_val">995мм</string>
-    <string name="humidity_val">20%</string>
+    <string name="pressure_suffix">мм</string>
+    <string name="humidity_suffix">%</string>
     <string name="moscow">Москва</string>
     <string name="date_val">Суббота, 6 Июля</string>
-    <string name="temperature_val">19°</string>
-    <string name="wind_val">4км/ч</string>
+    <string name="temperature_suffix">°</string>
+    <string name="wind_suffix">км/ч</string>
     <string name="day_val">Воскресенье</string>
+
+    <string name="fill_city_name">Пожалуйста введите название города</string>
 
     <string name="done">Готово</string>
     <string name="city">Город</string>

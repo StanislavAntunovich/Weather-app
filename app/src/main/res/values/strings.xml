@@ -18,14 +18,15 @@
     <string name="desc_pressure_icon">pressure icon</string>
     <string name="desc_wind_icon">wind icon</string>
 
-    <!--temp values-->
-    <string name="pressure_val">995mm</string>
+    <string name="pressure_suffix">mm</string>
     <string name="moscow">Moscow</string>
-    <string name="humidity_val">20%</string>
+    <string name="humidity_suffix">%</string>
     <string name="date_val">Saturday, July 6</string>
-    <string name="temperature_val">19°</string>
-    <string name="wind_val">4km/h</string>
+    <string name="temperature_suffix">°</string>
+    <string name="wind_suffix">km/h</string>
     <string name="day_val">Sunday</string>
+
+    <string name="fill_city_name">Please fill city field</string>
 
     <string name="done">Done</string>
     <string name="city">City</string>
