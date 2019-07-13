@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox checkBoxHumidity;
     private CheckBox checkBoxPressure;
     private CheckBox checkBoxWind;
+    private ListView citiesList;
 
     private WeatherSettingsPresenter settingsPresenter;
 
@@ -51,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         checkBoxHumidity = findViewById(R.id.cb_humidity);
         checkBoxPressure = findViewById(R.id.cb_pressure);
         checkBoxWind = findViewById(R.id.cb_wind);
+        citiesList = findViewById(R.id.list_cities);
     }
 
     private void setListeners() {
@@ -62,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
         );
         checkBoxWind.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> settingsPresenter.setWindChecked(isChecked)
+        );
+        citiesList.setOnItemClickListener((parent, view, position, id) ->
+                editCity.setText(((TextView) view).getText())
         );
     }
 
