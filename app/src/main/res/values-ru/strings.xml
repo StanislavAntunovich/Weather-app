@@ -28,4 +28,18 @@
     <string name="wind_val">4км/ч</string>
     <string name="day_val">Воскресенье</string>
 
+    <string name="done">Готово</string>
+    <string name="city">Город</string>
+    <string name="popular_cities">Популярные Города</string>
+
+    <string-array name="cities">
+        <item>Москва</item>
+        <item>Санкт-Петербург</item>
+        <item>Рязань</item>
+        <item>Новосибирск</item>
+        <item>Выборг</item>
+        <item>Новгород</item>
+        <item>Мурманск</item>
+    </string-array>
+
 </resources>
