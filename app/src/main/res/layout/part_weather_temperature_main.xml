@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="8dp"
         android:text="@string/moscow"
         android:textColor="@android:color/white"
         android:textSize="@dimen/text_city_size"
@@ -24,7 +24,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="40dp"
         android:text="@string/date_val"
         android:textColor="@android:color/white" />
 
