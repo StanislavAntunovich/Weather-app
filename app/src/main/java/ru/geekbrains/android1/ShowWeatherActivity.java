@@ -29,7 +29,9 @@ public class ShowWeatherActivity extends AppCompatActivity {
         txtWindVal = findViewById(R.id.text_wind_val);
         txtCity = findViewById(R.id.text_city);
 
-        txtCity.setText(settingsPresenter.getCity());
+        infoPresenter.setCity(settingsPresenter.getCity());
+
+        txtCity.setText(infoPresenter.getCity());
         txtTemperatureMain.setText(infoPresenter.getTemperature());
         txtWeatherType.setText(infoPresenter.getWeatherType());
         txtHumidityVal.setText(infoPresenter.getHumidity());

@@ -10,6 +10,7 @@ public class WeatherInfoPresenter {
     private Integer pressure;
     private Integer wind;
     private String weatherType;
+    private String city;
 
     private WeatherInfoPresenter() {
         //TODO change types and vals (depends on income JSON)
@@ -27,6 +28,14 @@ public class WeatherInfoPresenter {
             }
         }
         return instance;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getWeatherType() {
