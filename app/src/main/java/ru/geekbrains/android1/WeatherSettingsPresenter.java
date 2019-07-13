@@ -11,7 +11,9 @@ public class WeatherSettingsPresenter {
     private boolean windChecked;
 
     private WeatherSettingsPresenter() {
-
+        this.humidityChecked = true;
+        this.pressureChecked = true;
+        this.windChecked = true;
     }
 
     public static WeatherSettingsPresenter getInstance() {
