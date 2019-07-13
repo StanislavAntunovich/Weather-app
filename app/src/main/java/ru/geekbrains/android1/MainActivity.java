@@ -9,10 +9,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    public static String CITY = "CITY";
-    public static String WIND = "WIND";
-    public static String PRESSURE = "PRESSURE";
-    public static String HUMIDITY = "HUMIDITY";
 
     private EditText editCity;
     private CheckBox checkBoxHumidity;
@@ -26,10 +22,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_city);
 
-        editCity = findViewById(R.id.edit_city);
-        checkBoxHumidity = findViewById(R.id.cb_humidity);
-        checkBoxPressure = findViewById(R.id.cb_pressure);
-        checkBoxWind = findViewById(R.id.cb_wind);
+        initViews();
 
         settingsPresenter = WeatherSettingsPresenter.getInstance();
 
@@ -37,6 +30,17 @@ public class MainActivity extends AppCompatActivity {
         checkBoxPressure.setChecked(settingsPresenter.isPressureChecked());
         checkBoxHumidity.setChecked(settingsPresenter.isHumidityChecked());
 
+        setListeners();
+    }
+
+    private void initViews() {
+        editCity = findViewById(R.id.edit_city);
+        checkBoxHumidity = findViewById(R.id.cb_humidity);
+        checkBoxPressure = findViewById(R.id.cb_pressure);
+        checkBoxWind = findViewById(R.id.cb_wind);
+    }
+
+    private void setListeners() {
         checkBoxHumidity.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> settingsPresenter.setHumidityChecked(isChecked)
         );

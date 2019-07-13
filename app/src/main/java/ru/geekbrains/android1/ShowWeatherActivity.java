@@ -22,14 +22,9 @@ public class ShowWeatherActivity extends AppCompatActivity {
         WeatherSettingsPresenter settingsPresenter = WeatherSettingsPresenter.getInstance();
         WeatherInfoPresenter infoPresenter = WeatherInfoPresenter.getInstance();
 
-        txtTemperatureMain = findViewById(R.id.temperature_main_val);
-        txtWeatherType = findViewById(R.id.weather_type);
-        txtHumidityVal = findViewById(R.id.text_humidity_val);
-        txtPressureVal = findViewById(R.id.text_pressure_val);
-        txtWindVal = findViewById(R.id.text_wind_val);
-        txtCity = findViewById(R.id.text_city);
-
+        initViews();
         infoPresenter.setCity(settingsPresenter.getCity());
+        setDetailsVisibility(settingsPresenter);
 
         txtCity.setText(infoPresenter.getCity());
         txtTemperatureMain.setText(infoPresenter.getTemperature());
@@ -38,6 +33,9 @@ public class ShowWeatherActivity extends AppCompatActivity {
         txtPressureVal.setText(infoPresenter.getPressure());
         txtWindVal.setText(infoPresenter.getWind());
 
+    }
+
+    private void setDetailsVisibility(WeatherSettingsPresenter settingsPresenter) {
         LinearLayout humidityLiner = findViewById(R.id.ll_humidity);
         LinearLayout pressureLiner = findViewById(R.id.ll_pressure);
         LinearLayout windLiner = findViewById(R.id.ll_wind);
@@ -45,7 +43,15 @@ public class ShowWeatherActivity extends AppCompatActivity {
         humidityLiner.setVisibility(settingsPresenter.isHumidityChecked() ? View.VISIBLE : View.GONE);
         pressureLiner.setVisibility(settingsPresenter.isPressureChecked() ? View.VISIBLE : View.GONE);
         windLiner.setVisibility(settingsPresenter.isWindChecked() ? View.VISIBLE : View.GONE);
+    }
 
+    private void initViews() {
+        txtTemperatureMain = findViewById(R.id.temperature_main_val);
+        txtWeatherType = findViewById(R.id.weather_type);
+        txtHumidityVal = findViewById(R.id.text_humidity_val);
+        txtPressureVal = findViewById(R.id.text_pressure_val);
+        txtWindVal = findViewById(R.id.text_wind_val);
+        txtCity = findViewById(R.id.text_city);
     }
 
 
