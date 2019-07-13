@@ -9,7 +9,7 @@ public class WeatherInfoPresenter {
     private Integer humidity;
     private Integer pressure;
     private Integer wind;
-    private String weatherType;
+    private int weatherType;
     private String city;
 
     private WeatherInfoPresenter() {
@@ -18,7 +18,7 @@ public class WeatherInfoPresenter {
         this.humidity = 20;
         this.pressure = 995;
         this.wind = 4;
-        this.weatherType = "Partly Cloudy";
+        this.weatherType = R.string.partly_cloudy;
     }
 
     public static WeatherInfoPresenter getInstance() {
@@ -38,11 +38,11 @@ public class WeatherInfoPresenter {
         this.city = city;
     }
 
-    public String getWeatherType() {
+    public int getWeatherType() {
         return weatherType;
     }
 
-    public void setWeatherType(String weatherType) {
+    public void setWeatherType(int weatherType) {
         this.weatherType = weatherType;
     }
 
