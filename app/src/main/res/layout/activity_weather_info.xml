@@ -8,7 +8,7 @@
     tools:context=".MainActivity">
 
     <include
-        android:id="@+id/weather_temperature_main_part"
+        android:id="@+id/weather_main_info_part"
         layout="@layout/part_weather_temperature_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"

@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:background="@color/bg_details"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
         android:id="@+id/ll_humidity"
@@ -21,13 +22,20 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/desc_humidity_icon"
             android:src="@drawable/wi_humidity" />
-
         <TextView
             android:id="@+id/text_humidity_val"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/humidity_val"
+            tools:text="20"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_details" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/humidity_suffix"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_details" />
 
@@ -48,13 +56,20 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/desc_pressure_icon"
             android:src="@drawable/wi_pressure" />
-
         <TextView
             android:id="@+id/text_pressure_val"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/pressure_val"
+            tools:text="950"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_details" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/pressure_suffix"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_details" />
 
@@ -75,13 +90,20 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/desc_wind_icon"
             android:src="@drawable/wi_strong_wind" />
-
         <TextView
             android:id="@+id/text_wind_val"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/wind_val"
+            tools:text="4"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_details" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/wind_suffix"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_details" />
 
