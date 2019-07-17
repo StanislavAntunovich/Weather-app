@@ -1,29 +1,14 @@
 package ru.geekbrains.android1;
 
-public class WeatherSettingsPresenter {
-    private static WeatherSettingsPresenter instance;
+import java.io.Serializable;
 
-    private static final Object lock = new Object();
+public class WeatherSettingsParcel implements Serializable {
 
     private String city;
     private boolean humidityChecked;
     private boolean pressureChecked;
     private boolean windChecked;
 
-    private WeatherSettingsPresenter() {
-        this.humidityChecked = true;
-        this.pressureChecked = true;
-        this.windChecked = true;
-    }
-
-    public static WeatherSettingsPresenter getInstance() {
-        synchronized (lock) {
-            if (instance == null) {
-                instance = new WeatherSettingsPresenter();
-            }
-        }
-        return instance;
-    }
 
     public String getCity() {
         return city;

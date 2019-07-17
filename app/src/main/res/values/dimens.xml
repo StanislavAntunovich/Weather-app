@@ -10,4 +10,5 @@
     <dimen name="margin_16">16dp</dimen>
     <dimen name="margin_start">16dp</dimen>
     <dimen name="margin_end">16dp</dimen>
+    <dimen name="bttn_info_text_size">12sp</dimen>
 </resources>

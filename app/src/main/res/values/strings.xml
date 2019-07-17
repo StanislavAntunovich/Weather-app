@@ -31,6 +31,7 @@
     <string name="done">Done</string>
     <string name="city">City</string>
     <string name="popular_cities">Popular Cities</string>
+    <string name="more_info">City Info</string>
 
     <string-array name="cities">
         <item>Moscow</item>
