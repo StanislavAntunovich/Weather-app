@@ -1,5 +1,6 @@
 package ru.geekbrains.android1.fragments;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,10 +16,9 @@ import android.widget.LinearLayout;
 
 import ru.geekbrains.android1.CityPresenter;
 import ru.geekbrains.android1.CityWeatherAdapter;
-import ru.geekbrains.android1.MainActivity;
 import ru.geekbrains.android1.R;
+import ru.geekbrains.android1.ShowForecastActivity;
 import ru.geekbrains.android1.data.FakeData;
-import ru.geekbrains.android1.data.WeatherDetailsData;
 
 public class MainWeatherFragment extends Fragment {
     boolean isHorizontal;
@@ -44,8 +44,9 @@ public class MainWeatherFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         String[] cities = view.getResources().getStringArray(R.array.cities);
+        String[] conditions = view.getResources().getStringArray(R.array.conditions);
 
-        fakeData = new FakeData(cities);
+        fakeData = FakeData.getInstance();
         cityPresenter = CityPresenter.getInstance();
         cityPresenter.setCurrentData(fakeData.getData(cityPresenter.getCurrentCityIndex()));
 
@@ -53,7 +54,7 @@ public class MainWeatherFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayout.HORIZONTAL, false);
         weatherRecycler.setLayoutManager(layoutManager);
 
-        adapter = new CityWeatherAdapter(cities);
+        adapter = new CityWeatherAdapter(cities, conditions, this);
         weatherRecycler.setAdapter(adapter);
 
         new PagerSnapHelper().attachToRecyclerView(weatherRecycler);
@@ -65,8 +66,12 @@ public class MainWeatherFragment extends Fragment {
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    cityPresenter.setCurrentCityIndex(layoutManager.findFirstCompletelyVisibleItemPosition());
-                    changeData(fakeData.getData(cityPresenter.getCurrentCityIndex()));
+                    int index = layoutManager.findFirstCompletelyVisibleItemPosition();
+                    if (index != cityPresenter.getCurrentCityIndex() && index >= 0) {
+                        cityPresenter.setCurrentCityIndex(index);
+                        cityPresenter.setCurrentData(fakeData.getData(index));
+                        changeData();
+                    }
                 }
             }
 
@@ -75,26 +80,25 @@ public class MainWeatherFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    private void changeData(WeatherDetailsData currentData) {
-        Fragment fragment = DetailsWeatherFragment.create(currentData);
+    private void changeData() {
+        Fragment fragment = new DetailsWeatherFragment();
         getFragmentManager().beginTransaction()
                 .replace(R.id.weather_details_container, fragment)
                 .commit();
+        showForecast(null);
     }
 
-    private void showForecast() {
+    public void showForecast(View view) {
         if (isHorizontal) {
-            getFragmentManager().beginTransaction();
+            Fragment fragment = new WeekForecastFragment();
+            getFragmentManager().beginTransaction()
+            .replace(R.id.forecast_container, fragment)
+            .commit();
 
         }
-    }
-
-    public static Fragment create(WeatherDetailsData currentData, int currentIndex) {
-        Fragment fragment = new MainWeatherFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(MainActivity.CURRENT_DATA, currentData);
-        args.putInt(MainActivity.CURRENT_INDEX, currentIndex);
-        fragment.setArguments(args);
-        return fragment;
+        if (view != null) {
+            Intent intent = new Intent(getContext(), ShowForecastActivity.class);
+            startActivity(intent);
+        }
     }
 }

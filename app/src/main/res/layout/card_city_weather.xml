@@ -34,7 +34,6 @@
             android:layout_height="17dp"
             android:layout_gravity="center"
             android:background="@color/color_blue"
-            android:onClick="onClickMoreInfo"
             android:textSize="@dimen/bttn_info_text_size"
             android:text="@string/more_info" />
 

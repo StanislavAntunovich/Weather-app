@@ -5,6 +5,7 @@ import java.util.List;
 
 public class WeatherDetailsData implements Serializable {
     private String city;
+    private int weatherCondition;
     private Integer currentTemperature;
 
     private Integer humidity;
@@ -59,5 +60,13 @@ public class WeatherDetailsData implements Serializable {
 
     public void setForecast(List<ForecastData> forecast) {
         this.forecast = forecast;
+    }
+
+    public int getWeatherCondition() {
+        return weatherCondition;
+    }
+
+    public void setWeatherCondition(int weatherCondition) {
+        this.weatherCondition = weatherCondition;
     }
 }

@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import ru.geekbrains.android1.MainActivity;
+import ru.geekbrains.android1.CityPresenter;
 import ru.geekbrains.android1.R;
 import ru.geekbrains.android1.data.WeatherDetailsData;
 
@@ -17,6 +17,8 @@ public class DetailsWeatherFragment extends Fragment {
     private TextView txtHumidity;
     private TextView txtPressure;
     private TextView txtWind;
+
+    private CityPresenter presenter;
 
     @Nullable
     @Override
@@ -29,12 +31,13 @@ public class DetailsWeatherFragment extends Fragment {
 
         super.onViewCreated(view, savedInstanceState);
 
+        presenter = CityPresenter.getInstance();
+
         txtHumidity = view.findViewById(R.id.text_humidity_val);
         txtPressure = view.findViewById(R.id.text_pressure_val);
         txtWind = view.findViewById(R.id.text_wind_val);
 
-        WeatherDetailsData data = (WeatherDetailsData) getArguments().getSerializable(MainActivity.CURRENT_DATA);
-        setData(data);
+        setData(presenter.getCurrentData());
     }
 
     private void setData(WeatherDetailsData data) {
@@ -48,11 +51,4 @@ public class DetailsWeatherFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
     }
 
-    public static Fragment create(WeatherDetailsData currentData) {
-        Fragment fragment = new DetailsWeatherFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(MainActivity.CURRENT_DATA, currentData);
-        fragment.setArguments(args);
-        return fragment;
-    }
 }

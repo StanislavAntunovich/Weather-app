@@ -18,7 +18,7 @@ public class WeatherInfoPresenter {
         this.humidity = 20;
         this.pressure = 995;
         this.wind = 4;
-        this.weatherType = R.string.partly_cloudy;
+        this.weatherType = 3;
     }
 
     public static WeatherInfoPresenter getInstance() {

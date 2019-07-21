@@ -8,7 +8,9 @@ public class FakeData {
     private String[] cities;
     private Map<String, WeatherDetailsData> data;
 
-    public FakeData(String[] cities) {
+    private static FakeData instance;
+
+    private FakeData(String[] cities) {
         this.cities = cities;
         data = initData(cities);
     }
@@ -32,10 +34,18 @@ public class FakeData {
             weatherData.setPressure(r.nextInt(160) + 800);
             weatherData.setHumidity(r.nextInt(100));
             weatherData.setWind(r.nextInt(20));
+            weatherData.setWeatherCondition(r.nextInt(6));
             newData.put(city, weatherData);
         }
 
         return newData;
     }
 
+    public static FakeData getInstance() {
+        return instance;
+    }
+
+    public static void setData(String[] cities) {
+        instance = new FakeData(cities);
+    }
 }
