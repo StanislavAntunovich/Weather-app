@@ -1,8 +1,9 @@
 package ru.geekbrains.android1.data;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class WeatherDetailsData {
+public class WeatherDetailsData implements Serializable {
     private String city;
     private Integer currentTemperature;
 

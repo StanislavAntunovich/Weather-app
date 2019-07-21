@@ -7,8 +7,7 @@
     android:weightSum="3"
     tools:context=".MainActivity">
 
-    <fragment
-        android:name="ru.geekbrains.android1.fragments.MainWeatherFragment"
+    <FrameLayout
         android:id="@+id/main_weather_container"
         android:layout_width="match_parent"
         tools:layout="@layout/card_city_weather"

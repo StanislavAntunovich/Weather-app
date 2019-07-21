@@ -22,7 +22,7 @@
 
         <include
             android:id="@+id/preview_days_list_part"
-            layout="@layout/part_preview_days_list"
+            layout="@layout/activity_forecast"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1" />
