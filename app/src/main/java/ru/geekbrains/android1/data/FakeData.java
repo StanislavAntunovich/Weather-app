@@ -29,6 +29,7 @@ public class FakeData {
             WeatherDetailsData weatherData = new WeatherDetailsData();
             weatherData.setCity(city);
             weatherData.setCurrentTemperature(r.nextInt(60) - 30);
+            weatherData.setPressure(r.nextInt(160) + 800);
             weatherData.setHumidity(r.nextInt(100));
             weatherData.setWind(r.nextInt(20));
             newData.put(city, weatherData);

@@ -13,6 +13,7 @@ import ru.geekbrains.android1.fragments.MainWeatherFragment;
 public class MainActivity extends AppCompatActivity {
     public static final String CURRENT_DATA = "CURRENT_DATA";
     public static final String CURRENT_INDEX = "CURRENT_INDEX";
+    public static final String FORECAST = "FORECAST";
 
     private WeatherDetailsData currentWeatherData;
     private int currentIndex;
