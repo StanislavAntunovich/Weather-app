@@ -39,7 +39,7 @@ public class MainWeatherFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         String[] cities = view.getResources().getStringArray(R.array.cities);
 
-        weatherRecycler = view.findViewById(R.id.main_weather_container);
+        weatherRecycler = view.findViewById(R.id.fragment_weather_main);
         weatherRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayout.HORIZONTAL, false));
         adapter = new CityWeatherAdapter(cities);
         weatherRecycler.setAdapter(adapter);
