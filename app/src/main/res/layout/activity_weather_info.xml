@@ -9,7 +9,7 @@
 
     <include
         android:id="@+id/weather_main_info_part"
-        layout="@layout/part_weather_temperature_main"
+        layout="@layout/card_city_weather"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3"/>

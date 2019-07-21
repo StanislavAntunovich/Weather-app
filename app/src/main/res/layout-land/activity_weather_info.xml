@@ -15,7 +15,7 @@
 
         <include
             android:id="@+id/weather_main_info_part"
-            layout="@layout/part_weather_temperature_main"
+            layout="@layout/card_city_weather"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1" />

@@ -5,7 +5,7 @@
     android:id="@+id/linearLayout4"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_sky3"
+    tools:background="@drawable/bg_sky3"
     android:orientation="vertical">
 
 

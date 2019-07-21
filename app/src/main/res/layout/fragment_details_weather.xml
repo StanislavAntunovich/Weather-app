@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment.weather.details"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_details"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_humidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/padding_8"
+            android:text="@string/humidity"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_details" />
+
+        <TextView
+            android:id="@+id/text_humidity_val"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_details"
+            tools:text="20" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/humidity_suffix"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_details" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_pressure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/padding_8"
+            android:text="@string/pressure"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_details" />
+
+        <TextView
+            android:id="@+id/text_pressure_val"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_details"
+            tools:text="950" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/pressure_suffix"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_details" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_wind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/padding_8"
+            android:text="@string/wind"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_details" />
+
+        <TextView
+            android:id="@+id/text_wind_val"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_details"
+            tools:text="4" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/wind_suffix"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_details" />
+
+    </LinearLayout>
+
+</LinearLayout>
