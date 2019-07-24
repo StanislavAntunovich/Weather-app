@@ -1,18 +1,17 @@
 package ru.geekbrains.android1.data;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class WeatherDetailsData implements Serializable {
     private String city;
-    private int weatherCondition;
+    private String weatherCondition;
     private Integer currentTemperature;
 
     private Integer humidity;
     private Integer pressure;
     private Integer wind;
 
-    private List<ForecastData> forecast;
+    private ForecastData[] forecast;
 
     public String getCity() {
         return city;
@@ -54,19 +53,19 @@ public class WeatherDetailsData implements Serializable {
         this.wind = wind;
     }
 
-    public List<ForecastData> getForecast() {
+    public ForecastData[] getForecast() {
         return forecast;
     }
 
-    public void setForecast(List<ForecastData> forecast) {
+    public void setForecast(ForecastData[] forecast) {
         this.forecast = forecast;
     }
 
-    public int getWeatherCondition() {
+    public String getWeatherCondition() {
         return weatherCondition;
     }
 
-    public void setWeatherCondition(int weatherCondition) {
+    public void setWeatherCondition(String weatherCondition) {
         this.weatherCondition = weatherCondition;
     }
 }

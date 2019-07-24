@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ShowForecastActivity" />
+        <activity android:name=".AddCityActivity" />
     </application>
 
 </manifest>

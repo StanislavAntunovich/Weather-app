@@ -46,6 +46,21 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_weight="0.5"
+        android:gravity="center_vertical"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_details"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/ic_temp_high"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="12" />
+
+    <TextView
+        android:id="@+id/ic_temp_high"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:layout_weight="0.5"
@@ -58,7 +73,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/preview_temp_low"
+        android:id="@+id/ic_temp_low"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"
@@ -72,5 +87,20 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/preview_temp_low"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_weight="0.5"
+        android:gravity="center_vertical"
+        android:textColor="@color/temperature_low"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/ic_temp_low"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="12" />
 
 </android.support.constraint.ConstraintLayout>

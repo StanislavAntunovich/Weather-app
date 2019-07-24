@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!--полагаю тут будет чтото типа ListView или RecyclerView-->
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/forecast_activity_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_preview"
     tools:context=".ShowForecastActivity">
 
-</ListView>
+</FrameLayout>

@@ -1,6 +1,8 @@
 package ru.geekbrains.android1.data;
 
-public class ForecastData {
+import java.io.Serializable;
+
+public class ForecastData implements Serializable {
     private String day;
     private Integer highTemperature;
     private Integer lowTemperature;
