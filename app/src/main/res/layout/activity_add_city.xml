@@ -1,102 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/bg_sky1"
+    android:orientation="vertical"
     android:paddingStart="@dimen/margin_start"
     android:paddingEnd="@dimen/margin_end"
-    android:orientation="vertical">
+    tools:context=".AddCityActivity">
 
-    <EditText
-        android:id="@+id/edit_city"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="@string/city"
-        android:paddingStart="@dimen/padding_8"
-        android:paddingEnd="@dimen/padding_8"
-        android:textColor="@color/text_dark_blue"
-        android:textColorHint="@color/color_hint"
-        android:textSize="@dimen/text_city_details" />
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:text="@string/popular_cities"
-        android:textColor="@color/text_dark_blue"
-        android:textSize="@dimen/text_city_details" />
+        <EditText
+            android:id="@+id/edit_city"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_weight="10"
+            android:hint="@string/city"
+            android:paddingStart="@dimen/padding_8"
+            android:paddingEnd="@dimen/padding_8"
+            android:textColor="@color/text_dark_blue"
+            android:textColorHint="@color/color_hint"
+            android:textSize="@dimen/text_city_details" />
 
-    <ScrollView
+        <ImageView
+            android:id="@+id/btn_add_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:paddingStart="@dimen/margin_16"
+            android:paddingEnd="8dp"
+            android:src="@drawable/ic_add_circle"
+            android:contentDescription="@string/button_add" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_cities_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_weight="7.9"
-        android:fillViewport="true">
+        android:layout_marginTop="@dimen/margin_16"
+        android:layout_marginBottom="8dp"
+        android:layout_weight="10"
+        android:paddingStart="@dimen/padding_8"
+        android:paddingEnd="@dimen/padding_8">
 
-        <ListView
-            android:id="@+id/list_cities"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:cacheColorHint="@color/color_blue"
-            android:entries="@array/cities">
+    </androidx.recyclerview.widget.RecyclerView>
 
-        </ListView>
-    </ScrollView>
+    <!--<android.support.constraint.ConstraintLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:gravity="center">-->
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center">
+    <!--<CheckBox-->
+    <!--android:id="@+id/cb_humidity"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:buttonTint="@color/color_blue"-->
+    <!--android:checked="true"-->
+    <!--android:text="@string/humidity"-->
+    <!--android:textColor="@color/text_dark_blue"-->
+    <!--android:textSize="@dimen/text_city_details"-->
+    <!--app:layout_constraintBaseline_toBaselineOf="@+id/cb_pressure"-->
+    <!--app:layout_constraintEnd_toStartOf="@+id/cb_pressure"-->
+    <!--app:layout_constraintHorizontal_bias="0.5"-->
+    <!--app:layout_constraintStart_toStartOf="parent" />-->
 
-        <CheckBox
-            android:id="@+id/cb_humidity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:buttonTint="@color/color_blue"
-            android:checked="true"
-            android:text="@string/humidity"
-            android:textColor="@color/text_dark_blue"
-            android:textSize="@dimen/text_city_details"
-            app:layout_constraintBaseline_toBaselineOf="@+id/cb_pressure"
-            app:layout_constraintEnd_toStartOf="@+id/cb_pressure"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent" />
+    <!--<CheckBox-->
+    <!--android:id="@+id/cb_pressure"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="8dp"-->
+    <!--android:layout_marginBottom="8dp"-->
+    <!--android:buttonTint="@color/color_blue"-->
+    <!--android:checked="true"-->
+    <!--android:text="@string/pressure"-->
+    <!--android:textColor="@color/text_dark_blue"-->
+    <!--android:textSize="@dimen/text_city_details"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintEnd_toStartOf="@+id/cb_wind"-->
+    <!--app:layout_constraintHorizontal_bias="0.5"-->
+    <!--app:layout_constraintStart_toEndOf="@+id/cb_humidity"-->
+    <!--app:layout_constraintTop_toTopOf="parent" />-->
 
-        <CheckBox
-            android:id="@+id/cb_pressure"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:buttonTint="@color/color_blue"
-            android:checked="true"
-            android:text="@string/pressure"
-            android:textColor="@color/text_dark_blue"
-            android:textSize="@dimen/text_city_details"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/cb_wind"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/cb_humidity"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <CheckBox
-            android:id="@+id/cb_wind"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:buttonTint="@color/color_blue"
-            android:checked="true"
-            android:text="@string/wind"
-            android:textColor="@color/text_dark_blue"
-            android:textSize="@dimen/text_city_details"
-            app:layout_constraintBaseline_toBaselineOf="@+id/cb_pressure"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/cb_pressure" />
-    </android.support.constraint.ConstraintLayout>
+    <!--<CheckBox-->
+    <!--android:id="@+id/cb_wind"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:buttonTint="@color/color_blue"-->
+    <!--android:checked="true"-->
+    <!--android:text="@string/wind"-->
+    <!--android:textColor="@color/text_dark_blue"-->
+    <!--android:textSize="@dimen/text_city_details"-->
+    <!--app:layout_constraintBaseline_toBaselineOf="@+id/cb_pressure"-->
+    <!--app:layout_constraintEnd_toEndOf="parent"-->
+    <!--app:layout_constraintHorizontal_bias="0.5"-->
+    <!--app:layout_constraintStart_toEndOf="@+id/cb_pressure" />-->
+    <!--</android.support.constraint.ConstraintLayout>-->
 
     <Button
         android:id="@+id/bttn_show_weather"
@@ -106,7 +110,6 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="32dp"
         android:background="@color/color_blue"
-        android:onClick="showWeather"
         android:text="@string/done"
         android:textColor="@android:color/white" />
 

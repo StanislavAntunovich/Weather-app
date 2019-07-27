@@ -1,12 +1,24 @@
 <resources>
     <string name="app_name">Weather App</string>
 
-    <string name="cloudy">Cloudy</string>
-    <string name="partly_cloudy">Partly Cloudy</string>
-    <string name="sunny">Sunny</string>
-    <string name="rainy">Rainy</string>
-    <string name="windy">Windy</string>
-    <string name="snowy">Snowy</string>
+    <string-array name="conditions">
+        <item>Cloudy</item>
+        <item>Partly Cloudy</item>
+        <item>Sunny</item>
+        <item>Rainy</item>
+        <item>Windy</item>
+        <item>Snowy</item>
+    </string-array>
+
+    <string-array name="days_of_week">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </string-array>
 
     <string name="humidity">Humidity</string>
     <string name="pressure">Pressure</string>
@@ -31,7 +43,12 @@
     <string name="done">Done</string>
     <string name="city">City</string>
     <string name="popular_cities">Popular Cities</string>
-    <string name="more_info">City Info</string>
+    <string name="more_info">Show Forecast</string>
+    <string name="come_soon_for">Come soon for</string>
+    <string name="delete_button">delete button</string>
+    <string name="button_add">button add</string>
+    <string name="cities">Cities</string>
+    <string name="settings">Settings</string>
 
     <string-array name="cities">
         <item>Moscow</item>

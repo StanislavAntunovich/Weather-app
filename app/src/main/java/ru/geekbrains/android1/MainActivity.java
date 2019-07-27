@@ -1,81 +1,118 @@
 package ru.geekbrains.android1;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
+import ru.geekbrains.android1.data.FakeSourceBuilder;
+import ru.geekbrains.android1.data.WeatherDataSource;
+import ru.geekbrains.android1.fragments.DetailsWeatherFragment;
+import ru.geekbrains.android1.fragments.MainWeatherFragment;
+import ru.geekbrains.android1.fragments.WeekForecastFragment;
+import ru.geekbrains.android1.presenters.CurrentIndexPresenter;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String SETTINGS = "SETTINGS";
+    public static final String FORECAST = "FORECAST";
+    public static final String DATA_SOURCE = "DATA_SOURCE";
+    public static final String DETAILS = "DETAILS";
 
-    private EditText editCity;
-    private CheckBox checkBoxHumidity;
-    private CheckBox checkBoxPressure;
-    private CheckBox checkBoxWind;
-    private ListView citiesList;
+    private final int REQUEST_CODE = 42;
+
+    WeatherDataSource dataSource;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_city);
+        setContentView(R.layout.activity_main);
 
-        initViews();
-        setListeners();
-
-    }
-
-    private void initViews() {
-        editCity = findViewById(R.id.edit_city);
-        checkBoxHumidity = findViewById(R.id.cb_humidity);
-        checkBoxPressure = findViewById(R.id.cb_pressure);
-        checkBoxWind = findViewById(R.id.cb_wind);
-        citiesList = findViewById(R.id.list_cities);
-    }
-
-    private void setListeners() {
-        citiesList.setOnItemClickListener((parent, view, position, id) ->
-                editCity.setText(((TextView) view).getText())
-        );
-    }
-
-    public void showWeather(View view) {
-
-        String city = editCity.getText().toString();
-
-        if (city.trim().isEmpty()) {
-            Toast.makeText(getApplicationContext(), R.string.fill_city_name, Toast.LENGTH_SHORT)
-                    .show();
-            return;
+        if (savedInstanceState == null) {
+            dataSource = new FakeSourceBuilder()
+                    .setResources(getResources())
+                    .build();
         }
 
-        WeatherSettingsParcel settingsParcel = new WeatherSettingsParcel();
-        fillParcel(settingsParcel);
-        settingsParcel.setCity(city);
-
-        Intent intent = new Intent(getApplicationContext(), ShowWeatherActivity.class);
-        intent.putExtra(SETTINGS, settingsParcel);
-        startActivity(intent);
     }
 
-    private void fillParcel(WeatherSettingsParcel parcel) {
-        parcel.setWindChecked(checkBoxWind.isChecked());
-        parcel.setPressureChecked(checkBoxPressure.isChecked());
-        parcel.setHumidityChecked(checkBoxHumidity.isChecked());
-    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        CurrentIndexPresenter presenter = CurrentIndexPresenter.getInstance();
+        int currentIndex = presenter.getCurrentIndex();
 
+        Fragment mainFragment = MainWeatherFragment.create(dataSource);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_weather_container, mainFragment)
+                .commit();
+
+        Fragment detailsFragment = DetailsWeatherFragment.create(dataSource.getData(currentIndex));
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.weather_details_container, detailsFragment)
+                .commit();
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Fragment forecastFragment = WeekForecastFragment.create(
+                    dataSource.getData(currentIndex).getForecast()
+            );
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.forecast_container, forecastFragment)
+                    .commit();
+        }
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(DATA_SOURCE, dataSource);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        dataSource = (WeatherDataSource) savedInstanceState.getSerializable(DATA_SOURCE);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.menu_cities:
+                startActivityForResult(prepareIntent(), REQUEST_CODE);
+                return true;
+                //TODO settings
+            default:
+                    return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            dataSource = (WeatherDataSource) data.getExtras().getSerializable(DATA_SOURCE);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private Intent prepareIntent() {
+        Intent intent = new Intent(getApplicationContext(), AddCityActivity.class);
+        Bundle arg = new Bundle();
+        arg.putSerializable(DATA_SOURCE, dataSource);
+        intent.putExtras(arg);
+        return intent;
     }
 }
