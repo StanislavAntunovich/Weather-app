@@ -19,8 +19,6 @@ public class DetailsWeatherFragment extends Fragment {
     private TextView txtPressure;
     private TextView txtWind;
 
-    private WeatherDetailsData detailsData;
-
 
     @Nullable
     @Override

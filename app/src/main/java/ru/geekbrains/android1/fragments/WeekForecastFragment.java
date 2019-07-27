@@ -16,6 +16,7 @@ import ru.geekbrains.android1.R;
 import ru.geekbrains.android1.adapters.ForecastAdapter;
 import ru.geekbrains.android1.data.ForecastData;
 
+
 public class WeekForecastFragment extends Fragment {
     private ForecastData[] forecastData;
     private ForecastAdapter adapter;

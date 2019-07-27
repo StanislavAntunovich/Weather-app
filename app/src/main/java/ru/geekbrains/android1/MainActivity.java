@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
                 //TODO settings
             default:
-                    return super.onOptionsItemSelected(item);
+                return super.onOptionsItemSelected(item);
         }
 
     }
