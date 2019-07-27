@@ -31,12 +31,10 @@ public class WeatherDataBuilder {
 
     private static ForecastData[] getForecast() {
         String[] days = resources.getStringArray(R.array.days_of_week);
-        System.out.println("*********** " + days);
         ForecastData[] data = new ForecastData[days.length];
 
         int i = 0;
         for (String day : days) {
-            System.out.println(" ------------- " + i);
             ForecastData forecastData = new ForecastData();
             forecastData.setDay(day);
             forecastData.setHighTemperature(r.nextInt(60) - 30);

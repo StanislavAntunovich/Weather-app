@@ -39,7 +39,7 @@
             android:contentDescription="@string/button_add" />
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_cities_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -49,7 +49,7 @@
         android:paddingStart="@dimen/padding_8"
         android:paddingEnd="@dimen/padding_8">
 
-    </android.support.v7.widget.RecyclerView>
+    </androidx.recyclerview.widget.RecyclerView>
 
     <!--<android.support.constraint.ConstraintLayout-->
     <!--android:layout_width="match_parent"-->
