@@ -10,6 +10,16 @@
         <item>Snowy</item>
     </string-array>
 
+    <string-array name="days_of_week">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </string-array>
+
     <string name="humidity">Humidity</string>
     <string name="pressure">Pressure</string>
     <string name="wind">Wind</string>
@@ -35,6 +45,10 @@
     <string name="popular_cities">Popular Cities</string>
     <string name="more_info">Show Forecast</string>
     <string name="come_soon_for">Come soon for</string>
+    <string name="delete_button">delete button</string>
+    <string name="button_add">button add</string>
+    <string name="cities">Cities</string>
+    <string name="settings">Settings</string>
 
     <string-array name="cities">
         <item>Moscow</item>

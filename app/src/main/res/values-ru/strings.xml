@@ -11,6 +11,16 @@
         <item>Снег</item>
     </string-array>
 
+    <string-array name="days_of_week">
+        <item>Понедельник</item>
+        <item>Вторник</item>
+        <item>Среда</item>
+        <item>Четверг</item>
+        <item>Пятница</item>
+        <item>Суббота</item>
+        <item>Воскресенье</item>
+    </string-array>
+
     <string name="humidity">Влажность</string>
     <string name="pressure">Давление</string>
     <string name="wind">Ветер</string>
@@ -37,6 +47,10 @@
     <string name="popular_cities">Популярные Города</string>
     <string name="more_info">Погода на неделю</string>
     <string name="come_soon_for">Скоро для: </string>
+    <string name="delete_button">кнопа удаления</string>
+    <string name="button_add">кнопка добавления</string>
+    <string name="cities">Города </string>
+    <string name="settings">Настройки</string>
 
     <string-array name="cities">
         <item>Москва</item>

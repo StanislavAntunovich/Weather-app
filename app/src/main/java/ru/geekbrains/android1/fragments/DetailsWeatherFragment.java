@@ -1,15 +1,16 @@
 package ru.geekbrains.android1.fragments;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import ru.geekbrains.android1.CityPresenter;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import ru.geekbrains.android1.MainActivity;
 import ru.geekbrains.android1.R;
 import ru.geekbrains.android1.data.WeatherDetailsData;
 
@@ -18,7 +19,8 @@ public class DetailsWeatherFragment extends Fragment {
     private TextView txtPressure;
     private TextView txtWind;
 
-    private CityPresenter presenter;
+    private WeatherDetailsData detailsData;
+
 
     @Nullable
     @Override
@@ -31,13 +33,14 @@ public class DetailsWeatherFragment extends Fragment {
 
         super.onViewCreated(view, savedInstanceState);
 
-        presenter = CityPresenter.getInstance();
-
         txtHumidity = view.findViewById(R.id.text_humidity_val);
         txtPressure = view.findViewById(R.id.text_pressure_val);
         txtWind = view.findViewById(R.id.text_wind_val);
 
-        setData(presenter.getCurrentData());
+        WeatherDetailsData data = (WeatherDetailsData) getArguments().getSerializable(MainActivity.DETAILS);
+        if (data != null) {
+            setData(data);
+        }
     }
 
     private void setData(WeatherDetailsData data) {
@@ -49,6 +52,14 @@ public class DetailsWeatherFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    public static Fragment create(WeatherDetailsData data) {
+        DetailsWeatherFragment fragment = new DetailsWeatherFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(MainActivity.DETAILS, data);
+        fragment.setArguments(args);
+        return fragment;
     }
 
 }
