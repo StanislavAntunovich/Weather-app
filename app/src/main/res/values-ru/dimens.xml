@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="text_city_size">30sp</dimen>
-    <dimen name="icon_weather_size">96dp</dimen>
+    <dimen name="text_city_size">40sp</dimen>
+    <dimen name="icon_weather_size">80dp</dimen>
     <dimen name="text_secondary">25sp</dimen>
     <dimen name="text_details">22sp</dimen>
     <dimen name="text_city_details">18sp</dimen>
@@ -10,4 +10,5 @@
     <dimen name="margin_16">16dp</dimen>
     <dimen name="margin_start">16dp</dimen>
     <dimen name="margin_end">16dp</dimen>
+    <dimen name="bttn_info_text_size">12sp</dimen>
 </resources>

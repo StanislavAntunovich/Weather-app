@@ -33,6 +33,7 @@
     <string name="done">Готово</string>
     <string name="city">Город</string>
     <string name="popular_cities">Популярные Города</string>
+    <string name="more_info">О городе</string>
 
     <string-array name="cities">
         <item>Москва</item>
