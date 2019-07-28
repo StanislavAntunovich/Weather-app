@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -80,10 +81,11 @@ public class AddCityActivity extends AppCompatActivity {
         recycler = findViewById(R.id.recycler_cities_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recycler.setLayoutManager(layoutManager);
+        recycler.setItemAnimator(new DefaultItemAnimator());
         recycler.setAdapter(adapter);
         adapter.setOnClickListener(city -> {
+            adapter.notifyItemRemoved(dataSource.getIndex(city));
             dataSource.removeData(city);
-            adapter.notifyDataSetChanged();
         });
     }
 
@@ -96,8 +98,8 @@ public class AddCityActivity extends AppCompatActivity {
         }
         dataSource.addData(city);
         editCity.setText("");
-        adapter.notifyDataSetChanged();
         recycler.scrollToPosition(dataSource.size() - 1);
+        adapter.notifyItemInserted(dataSource.size() - 1);
     }
 
     private void done(View view) {

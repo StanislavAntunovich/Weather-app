@@ -100,20 +100,21 @@ public class MainWeatherFragment extends Fragment {
         LinearLayout ll = view.findViewById(R.id.ll_pagination);
         for (int i = 0; i < count; i++) {
             ImageView im = new ImageView(getContext());
-            im.setImageResource(R.drawable.ic_radio_button_unchecked);
+            im.setImageResource(R.drawable.ic_pagination);
             ll.addView(im);
             pagination.add(im);
         }
         pagination.get(indexPresenter.getCurrentIndex())
-                .setImageResource(R.drawable.ic_radio_button_checked);
+                .setImageResource(R.drawable.ic_pagination_current);
     }
 
     private void changePagePosition(int previousIndex, int newIndex) {
-
-        pagination.get(previousIndex).setImageResource(R.drawable.ic_radio_button_unchecked);
-        pagination.get(newIndex).setImageResource(R.drawable.ic_radio_button_checked);
+        pagination.get(previousIndex).setImageResource(R.drawable.ic_pagination);
+        pagination.get(newIndex).setImageResource(R.drawable.ic_pagination_current);
 
     }
+
+
 
     private void changeData(WeatherDetailsData data) {
         Fragment fragment = DetailsWeatherFragment.create(data);
