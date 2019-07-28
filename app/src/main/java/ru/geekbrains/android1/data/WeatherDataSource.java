@@ -6,6 +6,8 @@ public interface WeatherDataSource extends Serializable {
     WeatherDetailsData getData(String city);
     WeatherDetailsData getData(int cityIndex);
 
+    int getIndex(String city);
+
     int size();
     boolean isEmpty();
 

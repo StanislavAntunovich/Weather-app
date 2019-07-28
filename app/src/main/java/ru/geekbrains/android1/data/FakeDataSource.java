@@ -29,6 +29,16 @@ public class FakeDataSource implements WeatherDataSource {
     }
 
     @Override
+    public int getIndex(String city) {
+        for (int i = 0; i < dataSource.size(); i++) {
+            if (city.equals(dataSource.get(i).getCity())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
     public int size() {
         return dataSource.size();
     }
