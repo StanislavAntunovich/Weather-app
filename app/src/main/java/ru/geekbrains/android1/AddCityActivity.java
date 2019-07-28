@@ -10,11 +10,13 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ru.geekbrains.android1.adapters.CityListAdapter;
 import ru.geekbrains.android1.data.WeatherDataSource;
+import ru.geekbrains.android1.presenters.CurrentIndexPresenter;
 
 import static ru.geekbrains.android1.MainActivity.DATA_SOURCE;
 
@@ -28,6 +30,8 @@ public class AddCityActivity extends AppCompatActivity {
     private ImageView btnAddCity;
     private Button btnDone;
 
+    private CurrentIndexPresenter presenter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +43,8 @@ public class AddCityActivity extends AppCompatActivity {
 
         intiViews();
         setListeners();
+
+        presenter = CurrentIndexPresenter.getInstance();
     }
 
     private void setListeners() {
@@ -75,10 +81,11 @@ public class AddCityActivity extends AppCompatActivity {
         recycler = findViewById(R.id.recycler_cities_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recycler.setLayoutManager(layoutManager);
+        recycler.setItemAnimator(new DefaultItemAnimator());
         recycler.setAdapter(adapter);
         adapter.setOnClickListener(city -> {
+            adapter.notifyItemRemoved(dataSource.getIndex(city));
             dataSource.removeData(city);
-            adapter.notifyDataSetChanged();
         });
     }
 
@@ -91,16 +98,24 @@ public class AddCityActivity extends AppCompatActivity {
         }
         dataSource.addData(city);
         editCity.setText("");
-        adapter.notifyDataSetChanged();
         recycler.scrollToPosition(dataSource.size() - 1);
+        adapter.notifyItemInserted(dataSource.size() - 1);
     }
 
     private void done(View view) {
+        fixIndex();
+
         Intent intent = new Intent();
         Bundle agr = new Bundle();
         agr.putSerializable(DATA_SOURCE, dataSource);
         intent.putExtras(agr);
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    private void fixIndex() {
+        if (dataSource.size() < presenter.getCurrentIndex()) {
+            presenter.setCurrentIndex(dataSource.size() - 1);
+        }
     }
 }

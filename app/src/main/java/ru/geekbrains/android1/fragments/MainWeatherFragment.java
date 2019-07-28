@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import ru.geekbrains.android1.MainActivity;
 import ru.geekbrains.android1.R;
@@ -31,6 +35,8 @@ public class MainWeatherFragment extends Fragment {
     private CityWeatherAdapter adapter;
     private CurrentIndexPresenter indexPresenter;
 
+    private List<ImageView> pagination;
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -42,6 +48,7 @@ public class MainWeatherFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         indexPresenter = CurrentIndexPresenter.getInstance();
+        pagination = new ArrayList<>();
 
         return inflater.inflate(R.layout.fragment_main_weather, container, false);
     }
@@ -61,7 +68,7 @@ public class MainWeatherFragment extends Fragment {
             showForecast(view, dataSource.getData(city).getForecast())
         );
 
-        RecyclerView recycler = view.findViewById(R.id.fragment_weather_main);
+        RecyclerView recycler = view.findViewById(R.id.recycler_main_weather);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayout.HORIZONTAL, false);
         recycler.setLayoutManager(layoutManager);
 
@@ -75,16 +82,39 @@ public class MainWeatherFragment extends Fragment {
                     int index = layoutManager.findFirstCompletelyVisibleItemPosition();
                     if (index != RecyclerView.NO_POSITION &&
                             index != indexPresenter.getCurrentIndex()) {
+                        changePagePosition(indexPresenter.getCurrentIndex(), index);
                         indexPresenter.setCurrentIndex(index);
                         changeData(dataSource.getData(index));
                     }
                 }
             }
         });
+        makePagination(view);
 
         recycler.scrollToPosition(indexPresenter.getCurrentIndex());
         return adapter;
     }
+
+    private void makePagination(View view) {
+        int count = dataSource.size();
+        LinearLayout ll = view.findViewById(R.id.ll_pagination);
+        for (int i = 0; i < count; i++) {
+            ImageView im = new ImageView(getContext());
+            im.setImageResource(R.drawable.ic_pagination);
+            ll.addView(im);
+            pagination.add(im);
+        }
+        pagination.get(indexPresenter.getCurrentIndex())
+                .setImageResource(R.drawable.ic_pagination_current);
+    }
+
+    private void changePagePosition(int previousIndex, int newIndex) {
+        pagination.get(previousIndex).setImageResource(R.drawable.ic_pagination);
+        pagination.get(newIndex).setImageResource(R.drawable.ic_pagination_current);
+
+    }
+
+
 
     private void changeData(WeatherDetailsData data) {
         Fragment fragment = DetailsWeatherFragment.create(data);

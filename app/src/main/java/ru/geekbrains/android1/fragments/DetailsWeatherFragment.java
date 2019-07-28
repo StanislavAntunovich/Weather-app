@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,18 +14,24 @@ import androidx.fragment.app.Fragment;
 import ru.geekbrains.android1.MainActivity;
 import ru.geekbrains.android1.R;
 import ru.geekbrains.android1.data.WeatherDetailsData;
+import ru.geekbrains.android1.presenters.SettingsPresenter;
 
 public class DetailsWeatherFragment extends Fragment {
     private TextView txtHumidity;
     private TextView txtPressure;
     private TextView txtWind;
 
-    private WeatherDetailsData detailsData;
+    private SettingsPresenter presenter;
+    private LinearLayout llHumidity;
+    private LinearLayout llPressure;
+    private LinearLayout llPressure1;
+    private LinearLayout llWind;
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        presenter = SettingsPresenter.getInstance();
         return inflater.inflate(R.layout.fragment_details_weather, container, false);
     }
 
@@ -37,21 +44,36 @@ public class DetailsWeatherFragment extends Fragment {
         txtPressure = view.findViewById(R.id.text_pressure_val);
         txtWind = view.findViewById(R.id.text_wind_val);
 
+        llHumidity = view.findViewById(R.id.ll_humidity);
+        llPressure1 = view.findViewById(R.id.ll_pressure);
+        llWind = view.findViewById(R.id.ll_wind);
+
         WeatherDetailsData data = (WeatherDetailsData) getArguments().getSerializable(MainActivity.DETAILS);
         if (data != null) {
             setData(data);
         }
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        llHumidity.setVisibility(presenter.isHumidityChecked() ? View.VISIBLE : View.GONE);
+        llPressure1.setVisibility(presenter.isPressureChecked() ? View.VISIBLE : View.GONE);
+        llWind.setVisibility(presenter.isWindChecked() ? View.VISIBLE : View.GONE);
+
+        super.onResume();
+    }
+
+
+
     private void setData(WeatherDetailsData data) {
         txtHumidity.setText(data.getHumidity().toString());
         txtPressure.setText(data.getPressure().toString());
         txtWind.setText(data.getWind().toString());
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
     }
 
     public static Fragment create(WeatherDetailsData data) {

@@ -13,18 +13,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/edit_city"
+        <!--<com.google.android.material.textfield.TextInputEditText-->
+            <!--android:id="@+id/edit_city"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="16dp"-->
+            <!--android:layout_weight="10"-->
+            <!--android:hint="@string/city"-->
+            <!--android:paddingStart="@dimen/padding_8"-->
+            <!--android:paddingEnd="@dimen/padding_8"-->
+            <!--android:textColor="@color/text_dark_blue"-->
+            <!--android:textColorHint="@color/color_hint"-->
+            <!--android:textSize="@dimen/text_city_details" />-->
+
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:layout_weight="10"
-            android:hint="@string/city"
-            android:paddingStart="@dimen/padding_8"
-            android:paddingEnd="@dimen/padding_8"
-            android:textColor="@color/text_dark_blue"
-            android:textColorHint="@color/color_hint"
-            android:textSize="@dimen/text_city_details" />
+            android:layout_height="match_parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/city" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
             android:id="@+id/btn_add_city"
@@ -51,65 +64,14 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
-    <!--<android.support.constraint.ConstraintLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:gravity="center">-->
-
-    <!--<CheckBox-->
-    <!--android:id="@+id/cb_humidity"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:buttonTint="@color/color_blue"-->
-    <!--android:checked="true"-->
-    <!--android:text="@string/humidity"-->
-    <!--android:textColor="@color/text_dark_blue"-->
-    <!--android:textSize="@dimen/text_city_details"-->
-    <!--app:layout_constraintBaseline_toBaselineOf="@+id/cb_pressure"-->
-    <!--app:layout_constraintEnd_toStartOf="@+id/cb_pressure"-->
-    <!--app:layout_constraintHorizontal_bias="0.5"-->
-    <!--app:layout_constraintStart_toStartOf="parent" />-->
-
-    <!--<CheckBox-->
-    <!--android:id="@+id/cb_pressure"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginTop="8dp"-->
-    <!--android:layout_marginBottom="8dp"-->
-    <!--android:buttonTint="@color/color_blue"-->
-    <!--android:checked="true"-->
-    <!--android:text="@string/pressure"-->
-    <!--android:textColor="@color/text_dark_blue"-->
-    <!--android:textSize="@dimen/text_city_details"-->
-    <!--app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--app:layout_constraintEnd_toStartOf="@+id/cb_wind"-->
-    <!--app:layout_constraintHorizontal_bias="0.5"-->
-    <!--app:layout_constraintStart_toEndOf="@+id/cb_humidity"-->
-    <!--app:layout_constraintTop_toTopOf="parent" />-->
-
-    <!--<CheckBox-->
-    <!--android:id="@+id/cb_wind"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:buttonTint="@color/color_blue"-->
-    <!--android:checked="true"-->
-    <!--android:text="@string/wind"-->
-    <!--android:textColor="@color/text_dark_blue"-->
-    <!--android:textSize="@dimen/text_city_details"-->
-    <!--app:layout_constraintBaseline_toBaselineOf="@+id/cb_pressure"-->
-    <!--app:layout_constraintEnd_toEndOf="parent"-->
-    <!--app:layout_constraintHorizontal_bias="0.5"-->
-    <!--app:layout_constraintStart_toEndOf="@+id/cb_pressure" />-->
-    <!--</android.support.constraint.ConstraintLayout>-->
-
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/bttn_show_weather"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="32dp"
-        android:background="@color/color_blue"
+        android:backgroundTint="@color/color_blue"
         android:text="@string/done"
         android:textColor="@android:color/white" />
 
