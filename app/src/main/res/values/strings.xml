@@ -24,6 +24,9 @@
     <string name="pressure">Pressure</string>
     <string name="wind">Wind</string>
 
+    <string name="city_not_found">City not found</string>
+    <string name="error">Error</string>
+
     <!--images description-->
     <string name="desc_weather_icon">current weather icon</string>
     <string name="desc_humidity_icon">humidity icon</string>

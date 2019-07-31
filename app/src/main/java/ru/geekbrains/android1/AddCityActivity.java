@@ -2,6 +2,7 @@ package ru.geekbrains.android1;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -9,13 +10,16 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ru.geekbrains.android1.adapters.CityListAdapter;
+import ru.geekbrains.android1.data.FakeForecastBuilder;
 import ru.geekbrains.android1.data.WeatherDataSource;
+import ru.geekbrains.android1.data.WeatherDetailsData;
 import ru.geekbrains.android1.presenters.CurrentIndexPresenter;
 
 import static ru.geekbrains.android1.MainActivity.DATA_SOURCE;
@@ -47,17 +51,6 @@ public class AddCityActivity extends AppCompatActivity {
         presenter = CurrentIndexPresenter.getInstance();
     }
 
-    private void setListeners() {
-        btnAddCity.setOnClickListener(this::addCity);
-        btnDone.setOnClickListener(this::done);
-    }
-
-    private void intiViews() {
-        btnDone = findViewById(R.id.bttn_show_weather);
-        btnAddCity = findViewById(R.id.btn_add_city);
-        editCity = findViewById(R.id.edit_city);
-    }
-
     @Override
     protected void onResume() {
         setRecycler();
@@ -74,6 +67,17 @@ public class AddCityActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         dataSource = (WeatherDataSource) savedInstanceState.getSerializable(DATA_SOURCE);
+    }
+
+    private void setListeners() {
+        btnAddCity.setOnClickListener(this::addCity);
+        btnDone.setOnClickListener(this::done);
+    }
+
+    private void intiViews() {
+        btnDone = findViewById(R.id.bttn_show_weather);
+        btnAddCity = findViewById(R.id.btn_add_city);
+        editCity = findViewById(R.id.edit_city);
     }
 
     private void setRecycler() {
@@ -96,10 +100,36 @@ public class AddCityActivity extends AppCompatActivity {
                     .show();
             return;
         }
-        dataSource.addData(city);
-        editCity.setText("");
-        recycler.scrollToPosition(dataSource.size() - 1);
-        adapter.notifyItemInserted(dataSource.size() - 1);
+        final Handler handler = new Handler();
+
+        new Thread(() -> {
+            WeatherDetailsData weatherData = WeatherDataProvider.getData(city);
+
+            if (weatherData == null) {
+                handler.post(() ->
+                    showAlert(R.string.error, R.string.city_not_found));
+                return;
+            }
+            weatherData.setForecast(FakeForecastBuilder.getForecast(getResources()));
+            handler.post(() -> {
+                dataSource.addData(weatherData);
+                editCity.setText("");
+                recycler.scrollToPosition(dataSource.size() - 1);
+                adapter.notifyItemInserted(dataSource.size() - 1);
+            });
+
+        }).start();
+
+    }
+
+    private void showAlert(int title, int message) {
+        AlertDialog dialog = new AlertDialog.Builder(AddCityActivity.this, R.style.Theme_AppCompat_Light_Dialog_Alert)
+                .setTitle(title)
+                .setMessage(message)
+                .setNegativeButton("Ok", (dialog1, which) -> dialog1.cancel())
+                .create();
+
+        dialog.show();
     }
 
     private void done(View view) {
