@@ -54,6 +54,7 @@
     <string name="button_add">кнопка добавления</string>
     <string name="cities">Города </string>
     <string name="settings">Настройки</string>
+    <string name="add">Добавить</string>
 
     <string-array name="cities">
         <item>Москва</item>

@@ -1,5 +1,6 @@
 package ru.geekbrains.android1.fragments;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,10 +33,19 @@ public class WeekForecastFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        forecastData = (ForecastData[]) getArguments().getSerializable(MainActivity.FORECAST); //TODO savedInstance
-        if (forecastData != null) {
-            setRecycler(view, forecastData);
+        FragmentManager manager = getFragmentManager();
+        if (view.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
+                && manager != null) {
+            Fragment thisFragment = manager.findFragmentByTag(MainActivity.FORECAST_FRAGMENT_TAG);
+            if (thisFragment != null && thisFragment.isResumed()) {
+                manager.popBackStack();
+            }
+        }
 
+        Bundle args = getArguments();
+        if (args != null) {
+            forecastData = (ForecastData[]) getArguments().getSerializable(MainActivity.FORECAST);
+            setRecycler(view, forecastData);
         }
     }
 
@@ -46,7 +57,7 @@ public class WeekForecastFragment extends Fragment {
         recycler.setAdapter(adapter);
     }
 
-    public static Fragment create(ForecastData[] forecast) {
+    public static WeekForecastFragment create(ForecastData[] forecast) {
         WeekForecastFragment fragment = new WeekForecastFragment();
         Bundle args = new Bundle();
         args.putSerializable(MainActivity.FORECAST, forecast);

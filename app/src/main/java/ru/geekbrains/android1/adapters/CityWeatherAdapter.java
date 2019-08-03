@@ -1,5 +1,7 @@
 package ru.geekbrains.android1.adapters;
 
+import android.app.Activity;
+import android.content.res.Configuration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +19,11 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
 
     private WeatherDataSource dataSource;
     private OnItemClickListener listener;
+    private Activity activity;
 
-    public CityWeatherAdapter(WeatherDataSource dataSource) {
+    public CityWeatherAdapter(WeatherDataSource dataSource, Activity activity) {
         this.dataSource = dataSource;
+        this.activity = activity;
     }
 
     @NonNull
@@ -31,6 +35,11 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull CityWeatherViewHolder holder, int position) {
+        holder.btnShowForecast.setVisibility(
+                activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ?
+                        View.GONE : View.VISIBLE
+        );
+
         WeatherDetailsData data = dataSource.getData(position);
         holder.txtCity.setText(data.getCity());
         holder.txtTemperature.setText(data.getCurrentTemperature());

@@ -15,6 +15,7 @@ public interface WeatherDataSource extends Serializable {
     boolean isEmpty();
 
     void addData(WeatherDetailsData weatherData);
+    void addData(String city);
 
     void removeData(String city);
 }

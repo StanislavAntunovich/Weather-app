@@ -6,7 +6,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/color_blue</item>
     </style>
 
     <!--Text items-->
@@ -44,7 +44,7 @@
     <!--Icons-->
 
     <style name="MainWeatherIcon">
-        <!--<item name="android:gravity">center</item>-->
+        <item name="android:gravity">center</item>
         <item name="android:layout_width">80dp</item>
         <item name="android:layout_height">80dp</item>
     </style>

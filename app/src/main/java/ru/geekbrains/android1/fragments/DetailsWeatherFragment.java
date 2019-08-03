@@ -39,13 +39,7 @@ public class DetailsWeatherFragment extends Fragment {
 
         super.onViewCreated(view, savedInstanceState);
 
-        txtHumidity = view.findViewById(R.id.text_humidity_val);
-        txtPressure = view.findViewById(R.id.text_pressure_val);
-        txtWind = view.findViewById(R.id.text_wind_val);
-
-        llHumidity = view.findViewById(R.id.ll_humidity);
-        llPressure = view.findViewById(R.id.ll_pressure);
-        llWind = view.findViewById(R.id.ll_wind);
+        initViews(view);
 
         WeatherDetailsData data = (WeatherDetailsData) getArguments().getSerializable(MainActivity.DETAILS);
         if (data != null) {
@@ -53,10 +47,16 @@ public class DetailsWeatherFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    private void initViews(@NonNull View view) {
+        txtHumidity = view.findViewById(R.id.text_humidity_val);
+        txtPressure = view.findViewById(R.id.text_pressure_val);
+        txtWind = view.findViewById(R.id.text_wind_val);
+
+        llHumidity = view.findViewById(R.id.ll_humidity);
+        llPressure = view.findViewById(R.id.ll_pressure);
+        llWind = view.findViewById(R.id.ll_wind);
     }
+
 
     @Override
     public void onResume() {
@@ -66,7 +66,6 @@ public class DetailsWeatherFragment extends Fragment {
 
         super.onResume();
     }
-
 
 
     private void setData(WeatherDetailsData data) {

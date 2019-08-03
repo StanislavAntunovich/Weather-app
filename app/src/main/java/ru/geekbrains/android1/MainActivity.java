@@ -1,6 +1,5 @@
 package ru.geekbrains.android1;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,13 +8,15 @@ import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
-import ru.geekbrains.android1.data.DataSourceImpl;
+import ru.geekbrains.android1.data.FakeSourceBuilder;
 import ru.geekbrains.android1.data.WeatherDataSource;
+import ru.geekbrains.android1.fragments.AddCityFragment;
 import ru.geekbrains.android1.fragments.DetailsWeatherFragment;
 import ru.geekbrains.android1.fragments.MainWeatherFragment;
-import ru.geekbrains.android1.fragments.SettingsDialogFragment;
 import ru.geekbrains.android1.fragments.WeekForecastFragment;
 import ru.geekbrains.android1.presenters.CurrentIndexPresenter;
 
@@ -23,13 +24,14 @@ public class MainActivity extends AppCompatActivity {
     public static final String FORECAST = "FORECAST";
     public static final String DATA_SOURCE = "DATA_SOURCE";
     public static final String DETAILS = "DETAILS";
-    public static final String SETTINGS_FRAGMENT_TAG = "SETTINGS_TAG";
 
-    private static final int REQUEST_CODE = 42;
+    public static final String SETTINGS_FRAGMENT_TAG = "SETTINGS_TAG";
+    public static final String ADD_CITY_FRAGMENT_TAG = "ADD_CITY_FRAGMENT";
+    public static final String MAIN_FRAGMENT_TAG = "MAIN_FRAGMENT";
+    public static final String FORECAST_FRAGMENT_TAG = "FORECAST_FRAGMENT";
 
     private WeatherDataSource dataSource;
     private CurrentIndexPresenter presenter;
-    private SettingsDialogFragment dialogFragment;
 
 
     @Override
@@ -39,32 +41,30 @@ public class MainActivity extends AppCompatActivity {
 
         presenter = CurrentIndexPresenter.getInstance();
 
-        dialogFragment = new SettingsDialogFragment();
-        dialogFragment.setOnDismissListener(dialog -> setFragments());
-        dialogFragment.setStartActivityListener(this::showForecast);
-
         if (savedInstanceState == null) {
-            dataSource = new DataSourceImpl();
+            dataSource = new FakeSourceBuilder()
+                    .setResources(getResources())
+                    .build();
         }
+    }
 
+    private void initSideMenu(Toolbar toolbar) {
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setFragments();
+        showMainFragments();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        dialogFragment.setOnDismissListener(null);
         super.onSaveInstanceState(outState);
         outState.putSerializable(DATA_SOURCE, dataSource);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        dialogFragment.setOnDismissListener(dialog -> setFragments());
         super.onRestoreInstanceState(savedInstanceState);
         dataSource = (WeatherDataSource) savedInstanceState.getSerializable(DATA_SOURCE);
     }
@@ -79,59 +79,75 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.menu_settings) {
-            dialogFragment.show(getSupportFragmentManager(), SETTINGS_FRAGMENT_TAG);
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
+        //TODO
 
+        return true;
     }
+
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            dataSource = (WeatherDataSource) data.getExtras().getSerializable(DATA_SOURCE);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
+    public void onBackPressed() {
+        super.onBackPressed();
+        showMainFragments();
     }
 
-    private void setFragments() {
+    private void showMainFragments() {
         int currentIndex = presenter.getCurrentIndex();
-        if (currentIndex < 0 || dataSource.isEmpty()) {
-            showForecast();
-        } else {
-            Fragment mainFragment = MainWeatherFragment.create(dataSource);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_weather_container, mainFragment)
-                    .commit();
 
-            Fragment detailsFragment = DetailsWeatherFragment.create(dataSource.getData(currentIndex));
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.weather_details_container, detailsFragment)
-                    .commit();
+//        if (currentIndex < 0 || dataSource.isEmpty()) {
+//            showAddCity();
+//        } else {
 
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                Fragment forecastFragment = WeekForecastFragment.create(
-                        dataSource.getData(currentIndex).getForecast()
-                );
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.forecast_container, forecastFragment)
-                        .commit();
-            }
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+
+        MainWeatherFragment mainFragment = MainWeatherFragment.create(dataSource);
+        mainFragment.setListener(this::showForecast);
+        transaction
+                .replace(R.id.main_weather_container, mainFragment, MAIN_FRAGMENT_TAG);
+
+
+        Fragment detailsFragment = DetailsWeatherFragment.create(dataSource.getData(currentIndex));
+        transaction
+                .replace(R.id.weather_details_container, detailsFragment);
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Fragment forecastFragment = WeekForecastFragment.create(
+                    dataSource.getData(currentIndex).getForecast()
+            );
+            transaction
+                    .replace(R.id.forecast_container, forecastFragment);
+//            }
         }
+        transaction.commit();
     }
 
-    private Intent prepareIntent() {
-        Intent intent = new Intent(getApplicationContext(), AddCityActivity.class);
-        Bundle arg = new Bundle();
-        arg.putSerializable(DATA_SOURCE, dataSource);
-        intent.putExtras(arg);
-        return intent;
+    private void showForecast(Fragment forecastFragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .addToBackStack(null)
+                .replace(R.id.main_activity_container, forecastFragment, FORECAST_FRAGMENT_TAG)
+                .commit();
     }
 
-    private void showForecast() {
-        Intent intent = prepareIntent();
-        startActivityForResult(intent, REQUEST_CODE);
+    private void showAddCity() {
+        AddCityFragment addCityFragment = AddCityFragment.create(dataSource);
+        addCityFragment.setOnDoneListener(() -> {
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(ADD_CITY_FRAGMENT_TAG);
+            if (fragment != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                        .remove(fragment)
+                        .commit();
+                showMainFragments();
+            }
+        });
+        getSupportFragmentManager().beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .replace(R.id.main_activity_container, addCityFragment, ADD_CITY_FRAGMENT_TAG)
+                .addToBackStack(null)
+                .commit();
+
     }
 }

@@ -29,7 +29,6 @@
         android:layout_height="35dp"
         android:layout_gravity="center"
         android:layout_marginTop="8dp"
-        android:backgroundTint="@color/color_blue"
         android:text="@string/more_info"
         android:textSize="@dimen/bttn_info_text_size" />
 
