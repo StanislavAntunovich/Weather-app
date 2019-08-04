@@ -5,6 +5,8 @@ public class SettingsPresenter {
 
     private static final Object lock = new Object();
 
+    private int tempUnitIndex;
+
     private boolean isHumidityChecked;
     private boolean isWindChecked;
     private boolean isPressureChecked;
@@ -22,6 +24,7 @@ public class SettingsPresenter {
         this.isHumidityChecked = true;
         this.isPressureChecked = true;
         this.isWindChecked = true;
+        this.tempUnitIndex = 0;
     }
 
     public boolean isHumidityChecked() {
@@ -46,5 +49,13 @@ public class SettingsPresenter {
 
     public void setPressureChecked(boolean pressureChecked) {
         isPressureChecked = pressureChecked;
+    }
+
+    public int getTempUnitIndex() {
+        return tempUnitIndex;
+    }
+
+    public void setTempUnitIndex(int tempUnitIndex) {
+        this.tempUnitIndex = tempUnitIndex;
     }
 }

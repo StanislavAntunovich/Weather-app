@@ -36,7 +36,6 @@ public class DetailsWeatherFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
         super.onViewCreated(view, savedInstanceState);
 
         initViews(view);
@@ -45,6 +44,15 @@ public class DetailsWeatherFragment extends Fragment {
         if (data != null) {
             setData(data);
         }
+    }
+
+    @Override
+    public void onResume() {
+        llHumidity.setVisibility(presenter.isHumidityChecked() ? View.VISIBLE : View.GONE);
+        llPressure.setVisibility(presenter.isPressureChecked() ? View.VISIBLE : View.GONE);
+        llWind.setVisibility(presenter.isWindChecked() ? View.VISIBLE : View.GONE);
+
+        super.onResume();
     }
 
     private void initViews(@NonNull View view) {
@@ -57,15 +65,6 @@ public class DetailsWeatherFragment extends Fragment {
         llWind = view.findViewById(R.id.ll_wind);
     }
 
-
-    @Override
-    public void onResume() {
-        llHumidity.setVisibility(presenter.isHumidityChecked() ? View.VISIBLE : View.GONE);
-        llPressure.setVisibility(presenter.isPressureChecked() ? View.VISIBLE : View.GONE);
-        llWind.setVisibility(presenter.isWindChecked() ? View.VISIBLE : View.GONE);
-
-        super.onResume();
-    }
 
 
     private void setData(WeatherDetailsData data) {

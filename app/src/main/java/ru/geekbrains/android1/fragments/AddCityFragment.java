@@ -19,13 +19,13 @@ import ru.geekbrains.android1.MainActivity;
 import ru.geekbrains.android1.R;
 import ru.geekbrains.android1.adapters.CityListAdapter;
 import ru.geekbrains.android1.data.WeatherDataSource;
-import ru.geekbrains.android1.presenters.CurrentIndexPresenter;
+import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
 
 public class AddCityFragment extends Fragment {
     private OnDoneListener onDoneListener;
 
     private WeatherDataSource dataSource;
-    private CurrentIndexPresenter presenter;
+    private CurrentInfoPresenter presenter;
 
     private CityListAdapter adapter;
 
@@ -41,7 +41,7 @@ public class AddCityFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
             dataSource = (WeatherDataSource) args.getSerializable(MainActivity.DATA_SOURCE);
-            presenter = CurrentIndexPresenter.getInstance();
+            presenter = CurrentInfoPresenter.getInstance();
         }
     }
 
@@ -65,7 +65,7 @@ public class AddCityFragment extends Fragment {
     }
 
     private void intiViews(View view) {
-        btnDone = view.findViewById(R.id.bttn_show_weather);
+        btnDone = view.findViewById(R.id.btn_add_city_done);
         btnAddCity = view.findViewById(R.id.btn_add_city);
         editCity = view.findViewById(R.id.edit_city);
         recycler = view.findViewById(R.id.recycler_cities_list);

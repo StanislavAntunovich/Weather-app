@@ -25,7 +25,7 @@ import ru.geekbrains.android1.adapters.CityWeatherAdapter;
 import ru.geekbrains.android1.data.ForecastData;
 import ru.geekbrains.android1.data.WeatherDataSource;
 import ru.geekbrains.android1.data.WeatherDetailsData;
-import ru.geekbrains.android1.presenters.CurrentIndexPresenter;
+import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
 
 public class MainWeatherFragment extends Fragment {
     private boolean isHorizontal;
@@ -33,7 +33,7 @@ public class MainWeatherFragment extends Fragment {
     private ForecastListener listener;
 
     private CityWeatherAdapter adapter;
-    private CurrentIndexPresenter indexPresenter;
+    private CurrentInfoPresenter indexPresenter;
     private LinearLayout paginationLayout;
     private RecyclerView recycler;
 
@@ -49,7 +49,7 @@ public class MainWeatherFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        indexPresenter = CurrentIndexPresenter.getInstance();
+        indexPresenter = CurrentInfoPresenter.getInstance();
         pagination = new ArrayList<>();
 
         return inflater.inflate(R.layout.fragment_main_weather, container, false);
@@ -128,16 +128,17 @@ public class MainWeatherFragment extends Fragment {
     }
 
     private void showForecast(View view, ForecastData[] forecast) {
-        Fragment fragment = WeekForecastFragment.create(forecast);
         FragmentManager manager = getFragmentManager();
+
         if (isHorizontal && manager != null) {
+            Fragment fragment = WeekForecastFragment.create(forecast);
             manager.beginTransaction()
                     .replace(R.id.forecast_container, fragment)
                     .commit();
         }
         if (view != null &&
                 getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
-            listener.show(fragment);
+            listener.show();
         }
     }
 
@@ -154,6 +155,6 @@ public class MainWeatherFragment extends Fragment {
     }
 
     public interface ForecastListener {
-        void show(Fragment forecastFragment);
+        void show();
     }
 }
