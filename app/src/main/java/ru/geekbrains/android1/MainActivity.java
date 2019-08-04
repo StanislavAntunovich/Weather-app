@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
 
     private WeatherDataSource dataSource;
     private CurrentInfoPresenter currentInfoPresenter;
-    private String currentFragmentTag;
 
     private NavigationView navigationView;
 
@@ -57,21 +56,17 @@ public class MainActivity extends AppCompatActivity {
 
         currentInfoPresenter = CurrentInfoPresenter.getInstance();
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        initNavigationDrawer(toolbar);
+
         if (savedInstanceState == null) {
             dataSource = new FakeSourceBuilder()
                     .setResources(getResources())
                     .build();
+            showMainFragments();
         }
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        initNavigationDrawer(toolbar);
-        showMainFragments();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     private void initNavigationDrawer(Toolbar toolbar) {
@@ -148,20 +143,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-//        showMainFragments();
+        if (!currentInfoPresenter.getFragmentsIndexes().empty()) {
+            currentInfoPresenter.getFragmentsIndexes().pop();
+            if (currentInfoPresenter.getFragmentsIndexes().peek() == R.id.nav_home) {
+                showMainFragments();
+            } else {
+                navigationView.setCheckedItem(currentInfoPresenter.getFragmentsIndexes().peek());
+            }
+        }
     }
 
     private void showMainFragments() {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentByTag(currentFragmentTag);
-        if (!currentFragmentTag.equals(MAIN_FRAGMENT_TAG) && currentFragment != null) {
-            getSupportFragmentManager().beginTransaction()
-                    .remove(currentFragment)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-                    .commit();
-        }
+        currentInfoPresenter.getFragmentsIndexes().clear();
+        currentInfoPresenter.getFragmentsIndexes().push(R.id.nav_home);
 
         int currentIndex = currentInfoPresenter.getCurrentIndex();
-        currentFragmentTag = MAIN_FRAGMENT_TAG;
 
         navigationView.setCheckedItem(R.id.nav_home);
 
@@ -197,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showForecast() {
-        currentFragmentTag = FORECAST_FRAGMENT_TAG;
+        currentInfoPresenter.getFragmentsIndexes().push(R.id.nav_forecast);
         navigationView.setCheckedItem(R.id.nav_forecast);
 
         ForecastData[] data = dataSource.getData(currentInfoPresenter.getCurrentIndex()).getForecast();
@@ -213,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showAddCity() {
-        currentFragmentTag = ADD_CITY_FRAGMENT_TAG;
+        currentInfoPresenter.getFragmentsIndexes().push(R.id.nav_cities);
         navigationView.setCheckedItem(R.id.nav_cities);
 
         AddCityFragment addCityFragment = AddCityFragment.create(dataSource);
@@ -228,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showSettings() {
-        currentFragmentTag = SETTINGS_FRAGMENT_TAG;
+        currentInfoPresenter.getFragmentsIndexes().push(R.id.nav_settings);
         navigationView.setCheckedItem(R.id.nav_settings);
 
         SettingsFragment settingsFragment = new SettingsFragment();
@@ -253,7 +249,9 @@ public class MainActivity extends AppCompatActivity {
     private void about() {
         Uri uri = Uri.parse(cvUrl);
         Intent cvInfo = new Intent(Intent.ACTION_VIEW, uri);
-        startActivity(cvInfo);
+        if (cvInfo.resolveActivity(getPackageManager()) != null) {
+            startActivity(cvInfo);
+        }
     }
 
     private void send() {
@@ -266,7 +264,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
 
 
 }

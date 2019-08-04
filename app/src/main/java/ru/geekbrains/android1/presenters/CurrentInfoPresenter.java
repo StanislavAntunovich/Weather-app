@@ -8,7 +8,7 @@ public class CurrentInfoPresenter {
     private static final Object lock = new Object();
 
     private int currentIndex;
-    private Stack<String> fragments;
+    private Stack<Integer> fragmentsIndexes;
 
     public static CurrentInfoPresenter getInstance() {
         synchronized (lock) {
@@ -21,11 +21,11 @@ public class CurrentInfoPresenter {
 
     private CurrentInfoPresenter() {
         this.currentIndex = 0;
-        this.fragments = new Stack<>();
+        this.fragmentsIndexes = new Stack<>();
     }
 
-    public Stack<String> getFragments() {
-        return fragments;
+    public Stack<Integer> getFragmentsIndexes() {
+        return fragmentsIndexes;
     }
 
     public int getCurrentIndex() {
