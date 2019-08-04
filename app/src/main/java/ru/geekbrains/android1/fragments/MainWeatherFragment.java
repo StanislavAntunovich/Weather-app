@@ -109,6 +109,7 @@ public class MainWeatherFragment extends Fragment {
             paginationLayout.addView(im);
             pagination.add(im);
         }
+        System.out.println("************* " + indexPresenter.getCurrentIndex());
         pagination.get(indexPresenter.getCurrentIndex())
                 .setImageResource(R.drawable.ic_pagination_current);
     }

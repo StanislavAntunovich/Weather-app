@@ -55,7 +55,6 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="32dp"
-        android:backgroundTint="@color/color_blue"
         android:text="@string/done"
         android:textColor="@android:color/white" />
 

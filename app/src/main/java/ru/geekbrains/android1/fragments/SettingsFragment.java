@@ -25,8 +25,6 @@ public class SettingsFragment extends Fragment {
     private Spinner tempUnitSp;
     private Button doneBtn;
 
-    private OnDoneListener onDoneListener;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -80,18 +78,11 @@ public class SettingsFragment extends Fragment {
         });
 
         doneBtn.setOnClickListener(v -> {
-            if (onDoneListener != null) {
-                onDoneListener.onDone();
+            if (getActivity() != null) {
+                getActivity().onBackPressed();
             }
         });
 
     }
 
-    public void setOnDoneListener(OnDoneListener onDoneListener) {
-        this.onDoneListener = onDoneListener;
-    }
-
-    public interface OnDoneListener {
-        void onDone();
-    }
 }

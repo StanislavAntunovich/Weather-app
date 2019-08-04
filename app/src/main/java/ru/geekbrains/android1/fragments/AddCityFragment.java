@@ -22,8 +22,6 @@ import ru.geekbrains.android1.data.WeatherDataSource;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
 
 public class AddCityFragment extends Fragment {
-    private OnDoneListener onDoneListener;
-
     private WeatherDataSource dataSource;
     private CurrentInfoPresenter presenter;
 
@@ -98,14 +96,10 @@ public class AddCityFragment extends Fragment {
 
     private void done(View view) {
         fixIndex();
-        if (onDoneListener !=null) {
-            onDoneListener.onDone();
+        if (getActivity() != null) {
+            getActivity().onBackPressed();
         }
 
-    }
-
-    public void setOnDoneListener(OnDoneListener onDoneListener) {
-        this.onDoneListener = onDoneListener;
     }
 
     private void fixIndex() {
@@ -122,7 +116,4 @@ public class AddCityFragment extends Fragment {
         return fragment;
     }
 
-    public interface OnDoneListener {
-        void onDone();
-    }
 }

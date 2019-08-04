@@ -55,9 +55,25 @@
     <string name="cities">Города </string>
     <string name="settings">Настройки</string>
     <string name="add">Добавить</string>
-    <string name="navigation_drawer_open">navigation drawer open</string>
-    <string name="navigation_drawer_close">navigarion drawer close</string>
+    <string name="navigation_drawer_open">меню открыто</string>
+    <string name="navigation_drawer_close">меню закрыто</string>
     <string name="developer_email">stanislav.antunovich@gmail.com</string>
+    <string name="share_app">Посмотри приложение https://github.com/StanislavAntunovich/Weather-app</string>
+    <string name="send_subject">Вопрос</string>
+    <string name="cv_url">https://spb.hh.ru/resume/293a3520ff0735e2c40039ed1f4e46727a7036</string>
+    <string name="txt_temp_unit">Единица измерения</string>
+    <string name="desc_weather_mipmap">иконка погоды</string>
+    <string name="txt_nav_home">На главную</string>
+    <string name="txt_nav_forecast">Прогноз</string>
+    <string name="txt_nav_share">Поделиться</string>
+    <string name="txt_nav_send">Отправить вопрос</string>
+    <string name="txt_nav_about">Информация</string>
+    <string name="txt_communicate">Связь</string>
+    <string name="txt_about_developer">О разработчике</string>
+
+    <string name="txt_unable_share">Невозможно поделиться</string>
+    <string name="txt_unable_about">Невозможно показвать информацию</string>
+    <string name="txt_unable_send">Невозможно задать вопрос</string>
 
     <string-array name="cities">
         <item>Москва</item>

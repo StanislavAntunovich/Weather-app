@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,15 +35,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String DATA_SOURCE = "DATA_SOURCE";
     public static final String DETAILS = "DETAILS";
 
-    public static final String SETTINGS_FRAGMENT_TAG = "SETTINGS_TAG";
-    public static final String ADD_CITY_FRAGMENT_TAG = "ADD_CITY_FRAGMENT";
-    public static final String MAIN_FRAGMENT_TAG = "MAIN_FRAGMENT";
-    public static final String FORECAST_FRAGMENT_TAG = "FORECAST_FRAGMENT";
-
-    private static final String cvUrl = "https://spb.hh.ru/resume/293a3520ff0735e2c40039ed1f4e46727a7036";
-    private static final String repoUrl = "https://github.com/StanislavAntunovich/Weather-app"; //TODO вынести в строковые ресурсы
-
-
     private WeatherDataSource dataSource;
     private CurrentInfoPresenter currentInfoPresenter;
 
@@ -64,9 +56,17 @@ public class MainActivity extends AppCompatActivity {
             dataSource = new FakeSourceBuilder()
                     .setResources(getResources())
                     .build();
-            showMainFragments();
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (currentInfoPresenter.getFragmentsIndexes().empty() ||
+                currentInfoPresenter.getFragmentsIndexes().peek() == R.id.nav_home) {
+            showMainFragments();
+        }
     }
 
     private void initNavigationDrawer(Toolbar toolbar) {
@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 showAddCity();
                 break;
             case R.id.nav_home:
+                removeFragment(String.valueOf(currentInfoPresenter.getFragmentsIndexes().pop()));
                 showMainFragments();
                 break;
             case R.id.nav_settings:
@@ -142,14 +143,21 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        if (!currentInfoPresenter.getFragmentsIndexes().empty()) {
-            currentInfoPresenter.getFragmentsIndexes().pop();
-            if (currentInfoPresenter.getFragmentsIndexes().peek() == R.id.nav_home) {
-                showMainFragments();
-            } else {
-                navigationView.setCheckedItem(currentInfoPresenter.getFragmentsIndexes().peek());
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+
+            if (!currentInfoPresenter.getFragmentsIndexes().empty()
+                    && currentInfoPresenter.getFragmentsIndexes().pop() != R.id.nav_home) {
+                if (!currentInfoPresenter.getFragmentsIndexes().empty()
+                        && currentInfoPresenter.getFragmentsIndexes().peek() == R.id.nav_home) {
+                    showMainFragments();
+                } else {
+                    navigationView.setCheckedItem(currentInfoPresenter.getFragmentsIndexes().peek());
+                }
             }
+            super.onBackPressed();
         }
     }
 
@@ -171,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
             MainWeatherFragment mainFragment = MainWeatherFragment.create(dataSource);
             mainFragment.setListener(this::showForecast);
             transaction
-                    .replace(R.id.main_weather_container, mainFragment, MAIN_FRAGMENT_TAG);
+                    .replace(R.id.main_weather_container, mainFragment, String.valueOf(R.id.nav_home));
 
 
             Fragment detailsFragment = DetailsWeatherFragment.create(dataSource.getData(currentIndex));
@@ -187,7 +195,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             transaction
-                    .addToBackStack(null)
                     .commit();
         }
     }
@@ -203,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
         transaction
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .addToBackStack(null)
-                .replace(R.id.main_container, forecastFragment, FORECAST_FRAGMENT_TAG)
+                .replace(R.id.main_container, forecastFragment, String.valueOf(R.id.nav_forecast))
                 .commit();
 
     }
@@ -213,11 +220,10 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setCheckedItem(R.id.nav_cities);
 
         AddCityFragment addCityFragment = AddCityFragment.create(dataSource);
-        addCityFragment.setOnDoneListener(this::showMainFragments);
 
         getSupportFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .replace(R.id.main_container, addCityFragment, ADD_CITY_FRAGMENT_TAG)
+                .replace(R.id.main_container, addCityFragment, String.valueOf(R.id.nav_cities))
                 .addToBackStack(null)
                 .commit();
 
@@ -228,29 +234,32 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setCheckedItem(R.id.nav_settings);
 
         SettingsFragment settingsFragment = new SettingsFragment();
-        settingsFragment.setOnDoneListener(this::showMainFragments);
 
         getSupportFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .replace(R.id.main_container, settingsFragment, SETTINGS_FRAGMENT_TAG)
+                .replace(R.id.main_container, settingsFragment, String.valueOf(R.id.nav_settings))
                 .addToBackStack(null)
                 .commit();
     }
 
     private void share() {
         Intent repoInfo = new Intent(Intent.ACTION_SEND);
-        repoInfo.putExtra(Intent.EXTRA_TEXT, repoUrl);
+        repoInfo.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_app));
         repoInfo.setType("text/plain");
         if (repoInfo.resolveActivity(getPackageManager()) != null) {
             startActivity(repoInfo);
+        } else {
+            showToast(getString(R.string.txt_unable_share));
         }
     }
 
     private void about() {
-        Uri uri = Uri.parse(cvUrl);
+        Uri uri = Uri.parse(getString(R.string.cv_url));
         Intent cvInfo = new Intent(Intent.ACTION_VIEW, uri);
         if (cvInfo.resolveActivity(getPackageManager()) != null) {
             startActivity(cvInfo);
+        } else {
+            showToast(getString(R.string.txt_unable_about));
         }
     }
 
@@ -258,12 +267,30 @@ public class MainActivity extends AppCompatActivity {
         Uri uri = Uri.parse("mailto:" + getString(R.string.developer_email));
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
         emailIntent.setData(uri);
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Question");
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.send_subject));
         if (emailIntent.resolveActivity(getPackageManager()) != null) {
             startActivity(emailIntent);
+        } else {
+            showToast(getString(R.string.txt_unable_send));
         }
 
     }
 
+    private void removeFragment(String fragmentTag) {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(fragmentTag);
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .remove(fragment)
+                    .commit();
+        }
+    }
 
+    private void startFragment(int containerID, Fragment fragment, String tag) {
+        //TODO start all fragments from here
+
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+    }
 }

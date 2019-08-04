@@ -13,7 +13,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Единица измерения"
+            android:text="@string/txt_temp_unit"
             android:textColor="@color/text_dark_blue"
             android:textSize="@dimen/text_city_details"
             />
