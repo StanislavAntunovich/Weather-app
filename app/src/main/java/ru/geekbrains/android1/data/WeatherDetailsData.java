@@ -2,70 +2,25 @@ package ru.geekbrains.android1.data;
 
 import java.io.Serializable;
 
-public class WeatherDetailsData implements Serializable {
-    private String city;
-    private String weatherCondition;
-    private Integer currentTemperature;
+public interface WeatherDetailsData extends Serializable {
 
-    private Integer humidity;
-    private Integer pressure;
-    private Integer wind;
+    String getCity();
 
-    private ForecastData[] forecast;
+    //TODO разбить на Цельсий и Фаренгейт
+    String getCurrentTemperature();
 
-    public String getCity() {
-        return city;
-    }
+    String getHumidity();
 
-    public void setCity(String city) {
-        this.city = city;
-    }
+    String getPressure();
 
-    public Integer getCurrentTemperature() {
-        return currentTemperature;
-    }
+    String getWind();
 
-    public void setCurrentTemperature(Integer currentTemperature) {
-        this.currentTemperature = currentTemperature;
-    }
+    String getWeatherCondition();
 
-    public Integer getHumidity() {
-        return humidity;
-    }
+    String getLastUpdated();
 
-    public void setHumidity(Integer humidity) {
-        this.humidity = humidity;
-    }
+    ForecastData[] getForecast();
 
-    public Integer getPressure() {
-        return pressure;
-    }
+    void setForecast(ForecastData[] forecast); //TODO убрать когда будет настоящий
 
-    public void setPressure(Integer pressure) {
-        this.pressure = pressure;
-    }
-
-    public Integer getWind() {
-        return wind;
-    }
-
-    public void setWind(Integer wind) {
-        this.wind = wind;
-    }
-
-    public ForecastData[] getForecast() {
-        return forecast;
-    }
-
-    public void setForecast(ForecastData[] forecast) {
-        this.forecast = forecast;
-    }
-
-    public String getWeatherCondition() {
-        return weatherCondition;
-    }
-
-    public void setWeatherCondition(String weatherCondition) {
-        this.weatherCondition = weatherCondition;
-    }
 }

@@ -25,6 +25,9 @@
     <string name="pressure">Давление</string>
     <string name="wind">Ветер</string>
 
+    <string name="city_not_found">Город не найден</string>
+    <string name="error">Ошибка</string>
+
     <!--images description-->
     <string name="desc_weather_icon">значек текущей погоды</string>
     <string name="desc_humidity_icon">значек влажности</string>

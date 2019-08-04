@@ -71,6 +71,5 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.ViewHo
         }
 
 
-
     }
 }

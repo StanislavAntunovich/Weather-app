@@ -24,7 +24,6 @@ public class DetailsWeatherFragment extends Fragment {
     private SettingsPresenter presenter;
     private LinearLayout llHumidity;
     private LinearLayout llPressure;
-    private LinearLayout llPressure1;
     private LinearLayout llWind;
 
 
@@ -45,7 +44,7 @@ public class DetailsWeatherFragment extends Fragment {
         txtWind = view.findViewById(R.id.text_wind_val);
 
         llHumidity = view.findViewById(R.id.ll_humidity);
-        llPressure1 = view.findViewById(R.id.ll_pressure);
+        llPressure = view.findViewById(R.id.ll_pressure);
         llWind = view.findViewById(R.id.ll_wind);
 
         WeatherDetailsData data = (WeatherDetailsData) getArguments().getSerializable(MainActivity.DETAILS);
@@ -62,7 +61,7 @@ public class DetailsWeatherFragment extends Fragment {
     @Override
     public void onResume() {
         llHumidity.setVisibility(presenter.isHumidityChecked() ? View.VISIBLE : View.GONE);
-        llPressure1.setVisibility(presenter.isPressureChecked() ? View.VISIBLE : View.GONE);
+        llPressure.setVisibility(presenter.isPressureChecked() ? View.VISIBLE : View.GONE);
         llWind.setVisibility(presenter.isWindChecked() ? View.VISIBLE : View.GONE);
 
         super.onResume();
@@ -71,9 +70,9 @@ public class DetailsWeatherFragment extends Fragment {
 
 
     private void setData(WeatherDetailsData data) {
-        txtHumidity.setText(data.getHumidity().toString());
-        txtPressure.setText(data.getPressure().toString());
-        txtWind.setText(data.getWind().toString());
+        txtHumidity.setText(data.getHumidity());
+        txtPressure.setText(data.getPressure());
+        txtWind.setText(data.getWind());
     }
 
     public static Fragment create(WeatherDetailsData data) {

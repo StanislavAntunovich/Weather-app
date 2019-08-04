@@ -33,7 +33,7 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
     public void onBindViewHolder(@NonNull CityWeatherViewHolder holder, int position) {
         WeatherDetailsData data = dataSource.getData(position);
         holder.txtCity.setText(data.getCity());
-        holder.txtTemperature.setText(data.getCurrentTemperature().toString());
+        holder.txtTemperature.setText(data.getCurrentTemperature());
         holder.txtWeatherCondition.setText(data.getWeatherCondition());
         if (listener != null) {
             holder.setOnClickListener(listener);

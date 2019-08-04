@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import ru.geekbrains.android1.data.FakeSourceBuilder;
+import ru.geekbrains.android1.data.DataSourceImpl;
 import ru.geekbrains.android1.data.WeatherDataSource;
 import ru.geekbrains.android1.fragments.DetailsWeatherFragment;
 import ru.geekbrains.android1.fragments.MainWeatherFragment;
@@ -44,9 +44,7 @@ public class MainActivity extends AppCompatActivity {
         dialogFragment.setStartActivityListener(this::showForecast);
 
         if (savedInstanceState == null) {
-            dataSource = new FakeSourceBuilder()
-                    .setResources(getResources())
-                    .build();
+            dataSource = new DataSourceImpl();
         }
 
     }
