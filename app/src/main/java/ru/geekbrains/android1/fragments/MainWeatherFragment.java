@@ -57,8 +57,9 @@ public class MainWeatherFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        dataSource = (WeatherDataSource) getArguments().getSerializable(MainActivity.DATA_SOURCE); // TODO on savedInstance
-
+        if (getArguments() != null) {
+            dataSource = (WeatherDataSource) getArguments().getSerializable(MainActivity.DATA_SOURCE); // TODO on savedInstance
+        }
         paginationLayout = view.findViewById(R.id.ll_pagination);
 
         adapter = setRecycler(view);
@@ -109,7 +110,6 @@ public class MainWeatherFragment extends Fragment {
             paginationLayout.addView(im);
             pagination.add(im);
         }
-        System.out.println("************* " + indexPresenter.getCurrentIndex());
         pagination.get(indexPresenter.getCurrentIndex())
                 .setImageResource(R.drawable.ic_pagination_current);
     }
@@ -122,9 +122,11 @@ public class MainWeatherFragment extends Fragment {
 
     private void changeData(WeatherDetailsData data) {
         Fragment fragment = DetailsWeatherFragment.create(data);
-        getFragmentManager().beginTransaction()
-                .replace(R.id.weather_details_container, fragment)
-                .commit();
+        if (getFragmentManager() != null) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.weather_details_container, fragment)
+                    .commit();
+        }
         showForecast(null, data.getForecast());
     }
 

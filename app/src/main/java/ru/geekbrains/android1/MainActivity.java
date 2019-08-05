@@ -147,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-
             if (!currentInfoPresenter.getFragmentsIndexes().empty()
                     && currentInfoPresenter.getFragmentsIndexes().pop() != R.id.nav_home) {
                 if (!currentInfoPresenter.getFragmentsIndexes().empty()
@@ -168,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
         int currentIndex = currentInfoPresenter.getCurrentIndex();
 
         navigationView.setCheckedItem(R.id.nav_home);
+
 
         if (currentIndex < 0 || dataSource.isEmpty()) {
             showAddCity();

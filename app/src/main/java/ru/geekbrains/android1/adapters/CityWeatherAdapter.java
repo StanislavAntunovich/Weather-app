@@ -69,7 +69,7 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
         private TextView txtWeatherCondition;
         private Button btnShowForecast;
 
-        public CityWeatherViewHolder(@NonNull View itemView) {
+        CityWeatherViewHolder(@NonNull View itemView) {
             super(itemView);
             txtCity = itemView.findViewById(R.id.text_city);
             txtTemperature = itemView.findViewById(R.id.temperature_main_val);
@@ -77,7 +77,7 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
             btnShowForecast = itemView.findViewById(R.id.bttn_more_info);
         }
 
-        public void setOnClickListener(OnItemClickListener listener) {
+        void setOnClickListener(OnItemClickListener listener) {
             btnShowForecast.setOnClickListener(v -> {
                 if (getAdapterPosition() == RecyclerView.NO_POSITION) return;
 

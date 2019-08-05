@@ -40,9 +40,11 @@ public class DetailsWeatherFragment extends Fragment {
 
         initViews(view);
 
-        WeatherDetailsData data = (WeatherDetailsData) getArguments().getSerializable(MainActivity.DETAILS);
-        if (data != null) {
-            setData(data);
+        if (getArguments() != null) {
+            WeatherDetailsData data = (WeatherDetailsData) getArguments().getSerializable(MainActivity.DETAILS);
+            if (data != null) {
+                setData(data);
+            }
         }
     }
 

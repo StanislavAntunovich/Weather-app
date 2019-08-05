@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 public class ForecastData implements Serializable {
     private String day;
-    private Integer highTemperature;
-    private Integer lowTemperature;
+    private int highTemperature;
+    private int lowTemperature;
 
     public ForecastData(String day, Integer highTemperature, Integer lowTemperature) {
         this.day = day;
@@ -24,19 +24,19 @@ public class ForecastData implements Serializable {
         this.day = day;
     }
 
-    public Integer getHighTemperature() {
+    public int getHighTemperature() {
         return highTemperature;
     }
 
-    public void setHighTemperature(Integer highTemperature) {
+    public void setHighTemperature(int highTemperature) {
         this.highTemperature = highTemperature;
     }
 
-    public Integer getLowTemperature() {
+    public int getLowTemperature() {
         return lowTemperature;
     }
 
-    public void setLowTemperature(Integer lowTemperature) {
+    public void setLowTemperature(int lowTemperature) {
         this.lowTemperature = lowTemperature;
     }
 }

@@ -51,17 +51,17 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.ViewHo
         void onBtnClick(String city);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtCity;
         private ImageView btnRemove;
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtCity = itemView.findViewById(R.id.txt_city_name);
             btnRemove = itemView.findViewById(R.id.btn_remove_city);
         }
 
-        public void setOnClickListener(OnImgButtonClickListener listener) {
+        void setOnClickListener(OnImgButtonClickListener listener) {
             btnRemove.setOnClickListener(v -> {
                 if (getAdapterPosition() == RecyclerView.NO_POSITION) return;
 

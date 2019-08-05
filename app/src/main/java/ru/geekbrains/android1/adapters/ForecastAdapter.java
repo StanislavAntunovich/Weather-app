@@ -12,7 +12,7 @@ import ru.geekbrains.android1.R;
 import ru.geekbrains.android1.data.ForecastData;
 
 public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
-    ForecastData[] data;
+    private ForecastData[] data;
 
     public ForecastAdapter(ForecastData[] data) {
         this.data = data;
@@ -29,9 +29,14 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         ForecastData forecast = data[i];
-        viewHolder.txtDay.setText(forecast.getDay());
-        viewHolder.txtHighTemp.setText(forecast.getHighTemperature().toString());
-        viewHolder.txtLowTemp.setText(forecast.getLowTemperature().toString());
+
+        String hTemp = String.valueOf(forecast.getHighTemperature());
+        String lTemp = String.valueOf(forecast.getLowTemperature());
+        String day = forecast.getDay();
+
+        viewHolder.txtDay.setText(day);
+        viewHolder.txtHighTemp.setText(hTemp);
+        viewHolder.txtLowTemp.setText(lTemp);
     }
 
     @Override
@@ -39,12 +44,12 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
         return data.length;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtDay;
         private TextView txtHighTemp;
         private TextView txtLowTemp;
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtDay = itemView.findViewById(R.id.preview_day);
             txtLowTemp = itemView.findViewById(R.id.preview_temp_low);
