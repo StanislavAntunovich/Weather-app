@@ -173,29 +173,21 @@ public class MainActivity extends AppCompatActivity {
             showAddCity();
         } else {
 
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-
             MainWeatherFragment mainFragment = MainWeatherFragment.create(dataSource);
             mainFragment.setListener(this::showForecast);
-            transaction
-                    .replace(R.id.main_weather_container, mainFragment, String.valueOf(R.id.nav_home));
-
-
             Fragment detailsFragment = DetailsWeatherFragment.create(dataSource.getData(currentIndex));
-            transaction
-                    .replace(R.id.weather_details_container, detailsFragment);
+
+            startFragment(R.id.main_weather_container, mainFragment, String.valueOf(R.id.nav_home));
+            startFragment(R.id.weather_details_container, detailsFragment, null);
 
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 Fragment forecastFragment = WeekForecastFragment.create(
                         dataSource.getData(currentIndex).getForecast()
                 );
-                transaction
-                        .replace(R.id.forecast_container, forecastFragment);
+                startFragment(R.id.forecast_container, forecastFragment, String.valueOf(R.id.nav_forecast));
+
             }
 
-            transaction
-                    .commit();
         }
     }
 
@@ -206,13 +198,7 @@ public class MainActivity extends AppCompatActivity {
         ForecastData[] data = dataSource.getData(currentInfoPresenter.getCurrentIndex()).getForecast();
         Fragment forecastFragment = WeekForecastFragment.create(data);
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .addToBackStack(null)
-                .replace(R.id.main_container, forecastFragment, String.valueOf(R.id.nav_forecast))
-                .commit();
-
+        startFragment(R.id.main_container, forecastFragment, String.valueOf(R.id.nav_forecast));
     }
 
     private void showAddCity() {
@@ -221,11 +207,7 @@ public class MainActivity extends AppCompatActivity {
 
         AddCityFragment addCityFragment = AddCityFragment.create(dataSource);
 
-        getSupportFragmentManager().beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .replace(R.id.main_container, addCityFragment, String.valueOf(R.id.nav_cities))
-                .addToBackStack(null)
-                .commit();
+        startFragment(R.id.main_container, addCityFragment, String.valueOf(R.id.nav_cities));
 
     }
 
@@ -235,11 +217,7 @@ public class MainActivity extends AppCompatActivity {
 
         SettingsFragment settingsFragment = new SettingsFragment();
 
-        getSupportFragmentManager().beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .replace(R.id.main_container, settingsFragment, String.valueOf(R.id.nav_settings))
-                .addToBackStack(null)
-                .commit();
+        startFragment(R.id.main_container, settingsFragment, String.valueOf(R.id.nav_settings));
     }
 
     private void share() {
@@ -286,8 +264,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startFragment(int containerID, Fragment fragment, String tag) {
-        //TODO start all fragments from here
-
+        getSupportFragmentManager().beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .replace(containerID, fragment, tag)
+                .addToBackStack(null)
+                .commit();
     }
 
     private void showToast(String message) {
