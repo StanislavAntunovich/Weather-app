@@ -3,15 +3,10 @@ package ru.geekbrains.android1;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -36,6 +30,7 @@ import ru.geekbrains.android1.fragments.MainWeatherFragment;
 import ru.geekbrains.android1.fragments.SettingsFragment;
 import ru.geekbrains.android1.fragments.WeekForecastFragment;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
+import ru.geekbrains.android1.view.SensorsView;
 
 public class MainActivity extends AppCompatActivity {
     public static final String FORECAST = "FORECAST";
@@ -46,34 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private CurrentInfoPresenter currentInfoPresenter;
 
     private NavigationView navigationView;
-    private TextView currentHumidityTxt;
-    private TextView currentTemperatureTxt;
-    private Sensor humiditySensor;
-    private Sensor temperatureSensor;
-    private SensorManager sensorManager;
-
-    private SensorEventListener humiditySensorListener = new SensorEventListener() {
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            showCurrentHumidity(event);
-        }
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        }
-    };
-
-    private SensorEventListener temperatureSensorListener = new SensorEventListener() {
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            showCurrentTemperature(event);
-        }
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-        }
-    };
+    private SensorsView sensorsView;
 
 
     @Override
@@ -87,14 +55,15 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         initNavigationDrawer(toolbar);
 
+        sensorsView = findViewById(R.id.sensors_view);
+        sensorsView.addSensor(Sensor.TYPE_AMBIENT_TEMPERATURE, getString(R.string.current_temperature));
+        sensorsView.addSensor(Sensor.TYPE_RELATIVE_HUMIDITY, getString(R.string.current_humidity));
+
         if (savedInstanceState == null) {
             dataSource = new FakeSourceBuilder()
                     .setResources(getResources())
                     .build();
         }
-
-        initSensors();
-        initSensorsLayouts();
 
     }
 
@@ -110,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterListeners();
+        sensorsView.unregisterListeners();
     }
 
     @Override
@@ -160,52 +129,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void initSensors() {
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        humiditySensor = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
-        temperatureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-    }
-
-    private void initSensorsLayouts() {
-        if (humiditySensor != null) {
-            currentHumidityTxt = findViewById(R.id.val_curr_humidity);
-            ConstraintLayout humidityCL = findViewById(R.id.cl_current_humidity);
-            humidityCL.setVisibility(View.VISIBLE);
-        }
-
-        if (temperatureSensor != null) {
-            currentTemperatureTxt = findViewById(R.id.val_curr_temperature);
-            ConstraintLayout temperatureCL = findViewById(R.id.cl_current_temperature);
-            temperatureCL.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void registerListeners() {
-        if (humiditySensor != null) {
-            sensorManager.registerListener(humiditySensorListener, humiditySensor,
-                    SensorManager.SENSOR_DELAY_NORMAL);
-        }
-
-        if (temperatureSensor != null) {
-            sensorManager.registerListener(temperatureSensorListener, temperatureSensor,
-                    SensorManager.SENSOR_DELAY_NORMAL);
-        }
-    }
-
-    private void unregisterListeners() {
-        sensorManager.unregisterListener(humiditySensorListener, humiditySensor);
-        sensorManager.unregisterListener(temperatureSensorListener, temperatureSensor);
-    }
-
-    private void showCurrentHumidity(SensorEvent event) {
-        String value = String.valueOf(event.values[0]);
-        currentHumidityTxt.setText(value);
-    }
-
-    private void showCurrentTemperature(SensorEvent event) {
-        String value = String.valueOf(event.values[0]);
-        currentTemperatureTxt.setText(value);
-    }
 
     private void initNavigationDrawer(Toolbar toolbar) {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -252,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showMainFragments() {
-        registerListeners();
+        sensorsView.registerListeners();
         currentInfoPresenter.getFragmentsIndexes().clear();
         currentInfoPresenter.getFragmentsIndexes().push(R.id.nav_home);
 
@@ -282,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showForecast() {
-        unregisterListeners();
+        sensorsView.unregisterListeners();
         currentInfoPresenter.getFragmentsIndexes().push(R.id.nav_forecast);
         navigationView.setCheckedItem(R.id.nav_forecast);
 
@@ -293,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showAddCity() {
-        unregisterListeners();
+        sensorsView.unregisterListeners();
         currentInfoPresenter.getFragmentsIndexes().push(R.id.nav_cities);
         navigationView.setCheckedItem(R.id.nav_cities);
 
@@ -303,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showSettings() {
-        unregisterListeners();
+        sensorsView.unregisterListeners();
         currentInfoPresenter.getFragmentsIndexes().push(R.id.nav_settings);
         navigationView.setCheckedItem(R.id.nav_settings);
 

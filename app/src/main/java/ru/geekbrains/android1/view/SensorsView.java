@@ -6,78 +6,54 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import ru.geekbrains.android1.R;
 
 import static android.content.Context.SENSOR_SERVICE;
 
 public class SensorsView extends LinearLayout {
-    private Sensor humiditySensor;
-    private Sensor temperatureSensor;
+    private Map<String, Sensor> sensors = new HashMap<>();
+    private Map<String, SensorEventListener> listeners = new HashMap<>();
     private SensorManager sensorManager;
 
-    private ConstraintLayout humidityLayout;
-    private ConstraintLayout temperatureLayout;
-
-    private TextView humidityText;
-    private TextView temperatureText;
-
-    private SensorEventListener humiditySensorListener = new SensorEventListener() {
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            float humidity = event.values[0];
-            setHumidity(humidity);
-        }
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        }
-    };
-
-    private SensorEventListener temperatureSensorListener = new SensorEventListener() {
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            float temperature = event.values[0];
-            setTemperature(temperature);
-        }
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        }
-    };
+    private Context context;
 
     public SensorsView(Context context) {
         super(context);
-        initViews(context);
-        initSensors(context);
+        this.context = context;
+        init(context);
+        initSensorsManager(context);
     }
 
     public SensorsView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        initViews(context);
-        initSensors(context);
+        this.context = context;
+        init(context);
+        initSensorsManager(context);
     }
 
     public SensorsView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initViews(context);
-        initSensors(context);
+        this.context = context;
+        init(context);
+        initSensorsManager(context);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        initUI();
     }
 
-    private void initViews(Context context) {
+    private void init(Context context) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (inflater != null) {
@@ -85,71 +61,85 @@ public class SensorsView extends LinearLayout {
         }
     }
 
-    private void initSensors(Context context) {
+
+    private void initSensorsManager(Context context) {
         sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
-        humiditySensor = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
-        temperatureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
     }
 
-    private void initUI() {
-        humidityLayout = findViewById(R.id.cl_current_humidity);
-        temperatureLayout = findViewById(R.id.cl_current_temperature);
-        humidityText = findViewById(R.id.val_curr_humidity);
-        temperatureText = findViewById(R.id.val_curr_temperature);
-
-    }
-
-    private void initSensorsLayouts() {
-        if (humiditySensor != null) {
-            humidityLayout.setVisibility(View.VISIBLE);
-        }
-
-        if (temperatureSensor != null) {
-            temperatureLayout.setVisibility(View.VISIBLE);
+    public void addSensor(int sensorType, String sensorTitle) {
+        Sensor sensor = sensorManager.getDefaultSensor(sensorType);
+        if (sensor != null) {
+            sensors.put(sensorTitle, sensor);
+            TextView value = inflateSensorInfo(sensorTitle);
+            SensorEventListener listener = setSensorEventListener(value);
+            listeners.put(sensorTitle, listener);
         }
     }
 
-    public void registrListeners() {
-        if (humiditySensor != null) {
-            sensorManager.registerListener(humiditySensorListener, humiditySensor,
-                    SensorManager.SENSOR_DELAY_NORMAL);
-        }
+    private SensorEventListener setSensorEventListener(TextView textView) {
+        return new SensorEventListener() {
+                    @Override
+                    public void onSensorChanged(SensorEvent event) {
+                        String dimValue = String.valueOf(event.values[0]);
+                        textView.setText(dimValue);
+                    }
 
-        if (temperatureSensor != null) {
-            sensorManager.registerListener(temperatureSensorListener, temperatureSensor,
-                    SensorManager.SENSOR_DELAY_NORMAL);
+                    @Override
+                    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+                    }
+                };
+    }
+
+    public void registerListeners() {
+        for (String sensorTitle : sensors.keySet()) {
+            SensorEventListener listener = listeners.get(sensorTitle);
+            Sensor sensor = sensors.get(sensorTitle);
+            sensorManager.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
 
     public void unregisterListeners() {
-        sensorManager.unregisterListener(humiditySensorListener, humiditySensor);
-        sensorManager.unregisterListener(temperatureSensorListener, temperatureSensor);
+        for (String sensorTitle : sensors.keySet()) {
+            SensorEventListener listener = listeners.get(sensorTitle);
+            Sensor sensor = sensors.get(sensorTitle);
+            sensorManager.unregisterListener(listener, sensor);
+        }
     }
 
-    public void setHumidityVisibility(int visibility) {
-        humidityLayout.setVisibility(visibility);
+    private TextView inflateSensorInfo(String sensorTitle) {
+        LinearLayout layout = makeLayout();
+
+        TextView title = makeTextView(sensorTitle);
+        TextView value = makeTextView(null);
+
+        layout.addView(title);
+        layout.addView(value);
+
+        addView(layout);
+
+        return value;
     }
 
-    public void setTemperatureVisibility(int visibility) {
-        temperatureLayout.setVisibility(visibility);
+    private TextView makeTextView(String text) {
+        TextView title = new TextView(context);
+        if (text != null) {
+            title.setText(text);
+        }
+        title.setTextColor(context.getResources().getColor(android.R.color.white));
+        LayoutParams textViewParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        textViewParams.setMargins(8, 8, 8, 8);
+        title.setLayoutParams(textViewParams);
+        return title;
     }
 
-    public void setTemperature(float temperature) {
-        String temp = String.valueOf(temperature);
-        temperatureText.setText(temp);
+    private LinearLayout makeLayout() {
+        LinearLayout layout = new LinearLayout(context);
+        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        layoutParams.gravity = Gravity.CENTER;
+        layout.setLayoutParams(layoutParams);
+        return layout;
     }
 
-    public void setTemperature(String temperature) {
-        temperatureText.setText(temperature);
-    }
-
-    public void setHumidity(float humidity) {
-        String temp = String.valueOf(humidity);
-        humidityText.setText(temp);
-    }
-
-    public void setHumidity(String humidity) {
-        humidityText.setText(humidity);
-    }
 
 }

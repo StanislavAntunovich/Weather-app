@@ -74,8 +74,8 @@
     <string name="txt_unable_share">Невозможно поделиться</string>
     <string name="txt_unable_about">Невозможно показвать информацию</string>
     <string name="txt_unable_send">Невозможно задать вопрос</string>
-    <string name="current_humidity">Current humidity</string>
-    <string name="current_temperature">Current Temperature:</string>
+    <string name="current_humidity">Текущая влажность:</string>
+    <string name="current_temperature">Текущая температура:</string>
 
     <string-array name="cities">
         <item>Москва</item>
