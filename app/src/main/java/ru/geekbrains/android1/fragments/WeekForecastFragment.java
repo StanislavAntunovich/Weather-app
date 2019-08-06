@@ -31,10 +31,10 @@ public class WeekForecastFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        forecastData = (ForecastData[]) getArguments().getSerializable(MainActivity.FORECAST); //TODO savedInstance
-        if (forecastData != null) {
+        Bundle args = getArguments();
+        if (args != null) {
+            forecastData = (ForecastData[]) getArguments().getSerializable(MainActivity.FORECAST);
             setRecycler(view, forecastData);
-
         }
     }
 
@@ -46,7 +46,7 @@ public class WeekForecastFragment extends Fragment {
         recycler.setAdapter(adapter);
     }
 
-    public static Fragment create(ForecastData[] forecast) {
+    public static WeekForecastFragment create(ForecastData[] forecast) {
         WeekForecastFragment fragment = new WeekForecastFragment();
         Bundle args = new Bundle();
         args.putSerializable(MainActivity.FORECAST, forecast);

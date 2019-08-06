@@ -36,26 +36,16 @@ public class DetailsWeatherFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
         super.onViewCreated(view, savedInstanceState);
 
-        txtHumidity = view.findViewById(R.id.text_humidity_val);
-        txtPressure = view.findViewById(R.id.text_pressure_val);
-        txtWind = view.findViewById(R.id.text_wind_val);
+        initViews(view);
 
-        llHumidity = view.findViewById(R.id.ll_humidity);
-        llPressure = view.findViewById(R.id.ll_pressure);
-        llWind = view.findViewById(R.id.ll_wind);
-
-        WeatherDetailsData data = (WeatherDetailsData) getArguments().getSerializable(MainActivity.DETAILS);
-        if (data != null) {
-            setData(data);
+        if (getArguments() != null) {
+            WeatherDetailsData data = (WeatherDetailsData) getArguments().getSerializable(MainActivity.DETAILS);
+            if (data != null) {
+                setData(data);
+            }
         }
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -65,6 +55,16 @@ public class DetailsWeatherFragment extends Fragment {
         llWind.setVisibility(presenter.isWindChecked() ? View.VISIBLE : View.GONE);
 
         super.onResume();
+    }
+
+    private void initViews(@NonNull View view) {
+        txtHumidity = view.findViewById(R.id.text_humidity_val);
+        txtPressure = view.findViewById(R.id.text_pressure_val);
+        txtWind = view.findViewById(R.id.text_wind_val);
+
+        llHumidity = view.findViewById(R.id.ll_humidity);
+        llPressure = view.findViewById(R.id.ll_pressure);
+        llWind = view.findViewById(R.id.ll_wind);
     }
 
 

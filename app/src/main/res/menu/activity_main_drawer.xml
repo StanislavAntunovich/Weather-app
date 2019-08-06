@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="@string/txt_nav_home" />
+        <item
+            android:id="@+id/nav_forecast"
+            android:icon="@drawable/ic_clouds"
+            android:title="@string/txt_nav_forecast" />
+        <item
+            android:id="@+id/nav_cities"
+            android:icon="@drawable/ic_build"
+            android:title="@string/cities" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_gray"
+            android:title="@string/settings" />
+
+
+    </group>
+
+    <item android:title="@string/txt_communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_share"
+                android:title="@string/txt_nav_share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_send"
+                android:title="@string/txt_nav_send" />
+        </menu>
+    </item>
+
+    <item android:title="@string/txt_about_developer">
+        <menu>
+            <item
+                android:id="@+id/nav_about_developer"
+                android:icon="@drawable/ic_info_outline"
+                android:title="@string/txt_nav_about"/>
+        </menu>
+    </item>
+
+</menu>
