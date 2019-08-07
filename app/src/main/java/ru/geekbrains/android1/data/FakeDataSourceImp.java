@@ -8,7 +8,7 @@ import java.util.List;
 public class FakeDataSourceImp implements WeatherDataSource {
     private List<WeatherDetailsData> dataSource;
 
-    public FakeDataSourceImp(Resources resources) {
+    FakeDataSourceImp(Resources resources) {
         this.dataSource = new ArrayList<>();
         WeatherDataBuilder.setResources(resources);
     }

@@ -13,7 +13,7 @@ public class WeatherDetailsDataImp implements WeatherDetailsData {
 
     private ForecastData[] forecast;
 
-    public WeatherDetailsDataImp(String city, String weatherCondition, Integer currentTemperature, Integer humidity, Integer pressure, Integer wind) {
+    WeatherDetailsDataImp(String city, String weatherCondition, Integer currentTemperature, Integer humidity, Integer pressure, Integer wind) {
         this.city = city;
         this.weatherCondition = weatherCondition;
         this.currentTemperature = currentTemperature;

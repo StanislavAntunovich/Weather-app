@@ -32,10 +32,8 @@ public class MainWeatherFragment extends Fragment {
     private WeatherDataSource dataSource;
     private ForecastListener listener;
 
-    private CityWeatherAdapter adapter;
     private CurrentInfoPresenter indexPresenter;
     private LinearLayout paginationLayout;
-    private RecyclerView recycler;
 
     private List<ImageView> pagination;
 
@@ -62,20 +60,20 @@ public class MainWeatherFragment extends Fragment {
         }
         paginationLayout = view.findViewById(R.id.ll_pagination);
 
-        adapter = setRecycler(view);
+        setRecycler(view);
         makePagination();
 
         super.onViewCreated(view, savedInstanceState);
     }
 
 
-    private CityWeatherAdapter setRecycler(@NonNull View view) {
+    private void setRecycler(@NonNull View view) {
         CityWeatherAdapter adapter = new CityWeatherAdapter(dataSource, getActivity());
         adapter.setListener(city ->
                 showForecast(view, dataSource.getData(city).getForecast())
         );
 
-        recycler = view.findViewById(R.id.recycler_main_weather);
+        RecyclerView recycler = view.findViewById(R.id.recycler_main_weather);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayout.HORIZONTAL, false);
         recycler.setLayoutManager(layoutManager);
 
@@ -97,7 +95,6 @@ public class MainWeatherFragment extends Fragment {
             }
         });
         recycler.scrollToPosition(indexPresenter.getCurrentIndex());
-        return adapter;
     }
 
     private void makePagination() {

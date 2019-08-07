@@ -18,8 +18,6 @@ import ru.geekbrains.android1.data.ForecastData;
 
 
 public class WeekForecastFragment extends Fragment {
-    private ForecastData[] forecastData;
-    private ForecastAdapter adapter;
 
     @Nullable
     @Override
@@ -33,13 +31,13 @@ public class WeekForecastFragment extends Fragment {
 
         Bundle args = getArguments();
         if (args != null) {
-            forecastData = (ForecastData[]) getArguments().getSerializable(MainActivity.FORECAST);
+            ForecastData[] forecastData = (ForecastData[]) getArguments().getSerializable(MainActivity.FORECAST);
             setRecycler(view, forecastData);
         }
     }
 
     private void setRecycler(@NonNull View view, ForecastData[] data) {
-        adapter = new ForecastAdapter(data);
+        ForecastAdapter adapter = new ForecastAdapter(data);
         RecyclerView recycler = view.findViewById(R.id.fragment_forecast);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recycler.setLayoutManager(layoutManager);

@@ -3,6 +3,7 @@
     android:id="@+id/fragment_forecast"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="8dp"
     android:background="@color/bg_preview">
 
 </androidx.recyclerview.widget.RecyclerView>
