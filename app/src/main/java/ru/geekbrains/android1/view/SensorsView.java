@@ -1,6 +1,7 @@
 package ru.geekbrains.android1.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -26,6 +27,7 @@ public class SensorsView extends LinearLayout {
     private SensorManager sensorManager;
 
     private Context context;
+    int color;
 
     public SensorsView(Context context) {
         super(context);
@@ -39,6 +41,7 @@ public class SensorsView extends LinearLayout {
         this.context = context;
         init(context);
         initSensorsManager(context);
+        initAttrs(attrs, context);
     }
 
     public SensorsView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -46,6 +49,14 @@ public class SensorsView extends LinearLayout {
         this.context = context;
         init(context);
         initSensorsManager(context);
+        initAttrs(attrs, context);
+    }
+
+    private void initAttrs(AttributeSet attrs, Context context) {
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.SensorsView);
+        color = typedArray.getColor(R.styleable.SensorsView_textColor,
+                context.getResources().getColor(android.R.color.holo_blue_light));
+        typedArray.recycle();
     }
 
     @Override
@@ -78,17 +89,17 @@ public class SensorsView extends LinearLayout {
 
     private SensorEventListener setSensorEventListener(TextView textView) {
         return new SensorEventListener() {
-                    @Override
-                    public void onSensorChanged(SensorEvent event) {
-                        String dimValue = String.valueOf(event.values[0]);
-                        textView.setText(dimValue);
-                    }
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                String dimValue = String.valueOf(event.values[0]);
+                textView.setText(dimValue);
+            }
 
-                    @Override
-                    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
-                    }
-                };
+            }
+        };
     }
 
     public void registerListeners() {
@@ -126,7 +137,7 @@ public class SensorsView extends LinearLayout {
         if (text != null) {
             title.setText(text);
         }
-        title.setTextColor(context.getResources().getColor(android.R.color.white));
+        title.setTextColor(color);
         LayoutParams textViewParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         textViewParams.setMargins(8, 8, 8, 8);
         title.setLayoutParams(textViewParams);

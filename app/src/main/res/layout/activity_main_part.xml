@@ -30,7 +30,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryDark"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            app:textColor="@android:color/white" />
 
     </LinearLayout>
 </FrameLayout>
