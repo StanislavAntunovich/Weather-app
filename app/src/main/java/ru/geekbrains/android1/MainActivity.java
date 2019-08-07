@@ -125,6 +125,8 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     navigationView.setCheckedItem(currentInfoPresenter.getFragmentsIndexes().peek());
                 }
+            } else {
+                finish();
             }
         }
     }
