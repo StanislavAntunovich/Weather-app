@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            super.onBackPressed();
             if (!currentInfoPresenter.getFragmentsIndexes().empty()
                     && currentInfoPresenter.getFragmentsIndexes().pop() != R.id.nav_home) {
                 if (!currentInfoPresenter.getFragmentsIndexes().empty()
@@ -125,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
                     navigationView.setCheckedItem(currentInfoPresenter.getFragmentsIndexes().peek());
                 }
             }
-            super.onBackPressed();
         }
     }
 
