@@ -73,7 +73,6 @@ public class SettingsFragment extends Fragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-//                tempUnitSp.setSelection(settingsPresenter.getTempUnitIndex());
             }
         });
 

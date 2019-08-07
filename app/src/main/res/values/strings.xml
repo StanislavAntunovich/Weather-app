@@ -71,6 +71,8 @@
     <string name="txt_unable_share">Unable to share</string>
     <string name="txt_unable_about">Unable to show about</string>
     <string name="txt_unable_send">Unable to send question</string>
+    <string name="current_humidity">Current humidity: </string>
+    <string name="current_temperature">Current Temperature:</string>
 
     <string-array name="cities">
         <item>Moscow</item>

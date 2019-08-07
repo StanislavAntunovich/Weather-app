@@ -42,5 +42,13 @@
             android:layout_weight="1"
             tools:layout="@layout/fragment_details_weather" />
 
+        <ru.geekbrains.android1.view.SensorsView
+            android:id="@+id/sensors_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark"
+            android:orientation="vertical"
+            app:textColor="@android:color/white" />
+
     </LinearLayout>
 </FrameLayout>

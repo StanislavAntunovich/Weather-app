@@ -2,6 +2,7 @@ package ru.geekbrains.android1;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.hardware.Sensor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -29,6 +30,7 @@ import ru.geekbrains.android1.fragments.MainWeatherFragment;
 import ru.geekbrains.android1.fragments.SettingsFragment;
 import ru.geekbrains.android1.fragments.WeekForecastFragment;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
+import ru.geekbrains.android1.view.SensorsView;
 
 public class MainActivity extends AppCompatActivity {
     public static final String FORECAST = "FORECAST";
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private CurrentInfoPresenter currentInfoPresenter;
 
     private NavigationView navigationView;
+    private SensorsView sensorsView;
 
 
     @Override
@@ -51,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         initNavigationDrawer(toolbar);
+
+        sensorsView = findViewById(R.id.sensors_view);
+        sensorsView.addSensor(Sensor.TYPE_AMBIENT_TEMPERATURE, getString(R.string.current_temperature));
+        sensorsView.addSensor(Sensor.TYPE_RELATIVE_HUMIDITY, getString(R.string.current_humidity));
 
         if (savedInstanceState == null) {
             dataSource = new FakeSourceBuilder()
@@ -68,6 +75,62 @@ public class MainActivity extends AppCompatActivity {
             showMainFragments();
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorsView.unregisterListeners();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(DATA_SOURCE, dataSource);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        dataSource = (WeatherDataSource) savedInstanceState.getSerializable(DATA_SOURCE);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_add_city) {
+            showAddCity();
+        }
+        return true;
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+            if (!currentInfoPresenter.getFragmentsIndexes().empty()
+                    && currentInfoPresenter.getFragmentsIndexes().pop() != R.id.nav_home) {
+                if (!currentInfoPresenter.getFragmentsIndexes().empty()
+                        && currentInfoPresenter.getFragmentsIndexes().peek() == R.id.nav_home) {
+                    showMainFragments();
+                } else {
+                    navigationView.setCheckedItem(currentInfoPresenter.getFragmentsIndexes().peek());
+                }
+            } else {
+                finish();
+            }
+        }
+    }
+
 
     private void initNavigationDrawer(Toolbar toolbar) {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -113,54 +176,8 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable(DATA_SOURCE, dataSource);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        dataSource = (WeatherDataSource) savedInstanceState.getSerializable(DATA_SOURCE);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.menu_add_city) {
-            showAddCity();
-        }
-        return true;
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            if (!currentInfoPresenter.getFragmentsIndexes().empty()
-                    && currentInfoPresenter.getFragmentsIndexes().pop() != R.id.nav_home) {
-                if (!currentInfoPresenter.getFragmentsIndexes().empty()
-                        && currentInfoPresenter.getFragmentsIndexes().peek() == R.id.nav_home) {
-                    showMainFragments();
-                } else {
-                    navigationView.setCheckedItem(currentInfoPresenter.getFragmentsIndexes().peek());
-                }
-            }
-            super.onBackPressed();
-        }
-    }
-
     private void showMainFragments() {
+        sensorsView.registerListeners();
         currentInfoPresenter.getFragmentsIndexes().clear();
         currentInfoPresenter.getFragmentsIndexes().push(R.id.nav_home);
 
@@ -185,13 +202,12 @@ public class MainActivity extends AppCompatActivity {
                         dataSource.getData(currentIndex).getForecast()
                 );
                 startFragment(R.id.forecast_container, forecastFragment, String.valueOf(R.id.nav_forecast));
-
             }
-
         }
     }
 
     private void showForecast() {
+        sensorsView.unregisterListeners();
         currentInfoPresenter.getFragmentsIndexes().push(R.id.nav_forecast);
         navigationView.setCheckedItem(R.id.nav_forecast);
 
@@ -202,16 +218,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showAddCity() {
+        sensorsView.unregisterListeners();
         currentInfoPresenter.getFragmentsIndexes().push(R.id.nav_cities);
         navigationView.setCheckedItem(R.id.nav_cities);
 
         AddCityFragment addCityFragment = AddCityFragment.create(dataSource);
 
         startFragment(R.id.main_container, addCityFragment, String.valueOf(R.id.nav_cities));
-
     }
 
     private void showSettings() {
+        sensorsView.unregisterListeners();
         currentInfoPresenter.getFragmentsIndexes().push(R.id.nav_settings);
         navigationView.setCheckedItem(R.id.nav_settings);
 
@@ -251,7 +268,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             showToast(getString(R.string.txt_unable_send));
         }
-
     }
 
     private void removeFragment(String fragmentTag) {

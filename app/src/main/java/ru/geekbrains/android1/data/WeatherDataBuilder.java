@@ -16,7 +16,7 @@ public class WeatherDataBuilder {
         WeatherDataBuilder.conditions = resources.getStringArray(R.array.conditions);
     }
 
-    public static WeatherDetailsData buildData(String city) {
+    static WeatherDetailsData buildData(String city) {
         Integer temp = r.nextInt(60) - 30;
         Integer pressure = r.nextInt(160) + 800;
         Integer humidity = r.nextInt(100);
