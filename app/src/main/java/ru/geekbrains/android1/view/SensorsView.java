@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +56,7 @@ public class SensorsView extends LinearLayout {
     private void initAttrs(AttributeSet attrs, Context context) {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.SensorsView);
         color = typedArray.getColor(R.styleable.SensorsView_textColor,
-                context.getResources().getColor(android.R.color.holo_blue_light));
+                ContextCompat.getColor(context, android.R.color.holo_blue_light));
         typedArray.recycle();
     }
 
