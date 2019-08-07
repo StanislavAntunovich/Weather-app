@@ -22,12 +22,12 @@ import ru.geekbrains.android1.R;
 import static android.content.Context.SENSOR_SERVICE;
 
 public class SensorsView extends LinearLayout {
-    private Map<String, Sensor> sensors = new HashMap<>();
-    private Map<String, SensorEventListener> listeners = new HashMap<>();
+    private final Map<String, Sensor> sensors = new HashMap<>();
+    private final Map<String, SensorEventListener> listeners = new HashMap<>();
     private SensorManager sensorManager;
 
-    private Context context;
-    int color;
+    private final Context context;
+    private int color;
 
     public SensorsView(Context context) {
         super(context);
@@ -57,11 +57,6 @@ public class SensorsView extends LinearLayout {
         color = typedArray.getColor(R.styleable.SensorsView_textColor,
                 context.getResources().getColor(android.R.color.holo_blue_light));
         typedArray.recycle();
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
     }
 
     private void init(Context context) {
