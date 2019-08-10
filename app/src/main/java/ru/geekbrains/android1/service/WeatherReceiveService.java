@@ -11,10 +11,9 @@ import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import ru.geekbrains.android1.MainActivity;
 import ru.geekbrains.android1.data.ForecastData;
@@ -77,11 +76,11 @@ public class WeatherReceiveService extends IntentService {
     }
 
     private String sendRequest(String uri, String city, String lang) {
-        HttpsURLConnection connection = null;
+        HttpURLConnection connection = null;
         String result = null;
         try {
             URL url = new URL(String.format(uri, KEY, lang, city));
-            connection = (HttpsURLConnection) url.openConnection();
+            connection = (HttpURLConnection) url.openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             StringBuilder builder = new StringBuilder();
             String line;
