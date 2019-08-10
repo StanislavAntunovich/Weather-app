@@ -1,11 +1,15 @@
 package ru.geekbrains.android1.presenters;
 
+import java.util.Locale;
+
 public class SettingsPresenter {
     private static SettingsPresenter instance;
 
     private static final Object lock = new Object();
 
     private int tempUnitIndex;
+
+    private Locale currentLocale;
 
     private boolean isHumidityChecked;
     private boolean isWindChecked;
@@ -25,6 +29,14 @@ public class SettingsPresenter {
         this.isPressureChecked = true;
         this.isWindChecked = true;
         this.tempUnitIndex = 0;
+    }
+
+    public Locale getCurrentLocale() {
+        return currentLocale;
+    }
+
+    public void setCurrentLocale(Locale currentLocale) {
+        this.currentLocale = currentLocale;
     }
 
     public boolean isHumidityChecked() {

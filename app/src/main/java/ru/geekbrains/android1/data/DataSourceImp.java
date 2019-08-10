@@ -1,16 +1,15 @@
 package ru.geekbrains.android1.data;
 
-import android.content.res.Resources;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class FakeDataSourceImp implements WeatherDataSource {
+import ru.geekbrains.android1.model.CurrentWeatherDataImpl;
+
+public class DataSourceImp implements WeatherDataSource {
     private List<WeatherDetailsData> dataSource;
 
-    FakeDataSourceImp(Resources resources) {
+    public DataSourceImp() {
         this.dataSource = new ArrayList<>();
-        WeatherDataBuilder.setResources(resources);
     }
 
     @Override
@@ -66,8 +65,9 @@ public class FakeDataSourceImp implements WeatherDataSource {
 
     @Override
     public void addData(String city) {
-        WeatherDetailsData newData = WeatherDataBuilder.buildData(city);
-        dataSource.add(newData);
+        WeatherDetailsData data = new CurrentWeatherDataImpl();
+        data.setCity(city);
+        dataSource.add(data);
     }
 
     @Override

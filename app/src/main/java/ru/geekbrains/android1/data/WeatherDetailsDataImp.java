@@ -64,6 +64,11 @@ public class WeatherDetailsDataImp implements WeatherDetailsData {
     }
 
     @Override
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    @Override
     public void setForecast(ForecastData[] forecast) {
         this.forecast = forecast;
     }

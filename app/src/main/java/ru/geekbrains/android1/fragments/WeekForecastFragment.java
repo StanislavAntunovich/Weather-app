@@ -52,4 +52,6 @@ public class WeekForecastFragment extends Fragment {
         return fragment;
     }
 
+
+
 }

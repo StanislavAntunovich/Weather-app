@@ -1,6 +1,9 @@
 package ru.geekbrains.android1;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.hardware.Sensor;
 import android.net.Uri;
@@ -21,27 +24,50 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
 
-import ru.geekbrains.android1.data.FakeSourceBuilder;
+import java.util.Locale;
+import java.util.Objects;
+
+import ru.geekbrains.android1.data.DataSourceImp;
 import ru.geekbrains.android1.data.ForecastData;
 import ru.geekbrains.android1.data.WeatherDataSource;
+import ru.geekbrains.android1.data.WeatherDetailsData;
 import ru.geekbrains.android1.fragments.AddCityFragment;
 import ru.geekbrains.android1.fragments.DetailsWeatherFragment;
 import ru.geekbrains.android1.fragments.MainWeatherFragment;
 import ru.geekbrains.android1.fragments.SettingsFragment;
 import ru.geekbrains.android1.fragments.WeekForecastFragment;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
+import ru.geekbrains.android1.presenters.SettingsPresenter;
 import ru.geekbrains.android1.view.SensorsView;
+
+import static ru.geekbrains.android1.service.WeatherReceiveService.BROADCAST_ACTION;
 
 public class MainActivity extends AppCompatActivity {
     public static final String FORECAST = "FORECAST";
     public static final String DATA_SOURCE = "DATA_SOURCE";
     public static final String DETAILS = "DETAILS";
+    public static final String WEATHER_DATA = "WEATHER_DATA";
+
+    public static final String RESULT = "RESULT_CODE";
+    public static final String ACTION = "ACTION_CODE";
+
+    public static final String OK = "RESULT_OK";
+    public static final String ERROR = "RESULT_ERROR";
+    public static final String ACTION_ADD = "ADD";
+    public static final String ACTION_SET = "SET";
+
+    public static final String CITY = "CITY_DATA";
+    public static final String LANG = "LANGUAGE";
+
 
     private WeatherDataSource dataSource;
     private CurrentInfoPresenter currentInfoPresenter;
+    private SettingsPresenter settingsPresenter;
 
     private NavigationView navigationView;
     private SensorsView sensorsView;
+
+    private WeatherDataReceiver receiver = new WeatherDataReceiver();
 
 
     @Override
@@ -50,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         currentInfoPresenter = CurrentInfoPresenter.getInstance();
+        settingsPresenter = SettingsPresenter.getInstance();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -60,11 +87,24 @@ public class MainActivity extends AppCompatActivity {
         sensorsView.addSensor(Sensor.TYPE_RELATIVE_HUMIDITY, getString(R.string.current_humidity));
 
         if (savedInstanceState == null) {
-            dataSource = new FakeSourceBuilder()
-                    .setResources(getResources())
-                    .build();
+            dataSource = new DataSourceImp();
         }
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Locale currentLocale = getResources().getConfiguration().locale;
+        currentLocale.getDisplayLanguage();
+        settingsPresenter.setCurrentLocale(currentLocale);
+        registerReceiver(receiver, new IntentFilter(BROADCAST_ACTION));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(receiver);
     }
 
     @Override
@@ -285,9 +325,46 @@ public class MainActivity extends AppCompatActivity {
                 .replace(containerID, fragment, tag)
                 .addToBackStack(null)
                 .commit();
+
     }
 
     private void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    private class WeatherDataReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String result = intent.getStringExtra(RESULT);
+            if (result.equals(OK)) {
+                String action = intent.getStringExtra(ACTION);
+                WeatherDetailsData data = (WeatherDetailsData)
+                        Objects.requireNonNull(intent.getExtras()).getSerializable(WEATHER_DATA);
+                if (data != null) {
+                    if (action.equals(ACTION_SET)) {
+                        dataSource.setData(data.getCity(), data);
+                        MainWeatherFragment mainFragment = (MainWeatherFragment)
+                                getSupportFragmentManager()
+                                        .findFragmentByTag(String.valueOf(R.id.nav_home));
+                        if (mainFragment != null) {
+                            mainFragment.notifyDataUpdated();
+                        }
+                    } else if (action.equals(ACTION_ADD)) {
+                        dataSource.addData(data);
+                        AddCityFragment addCityFragment = (AddCityFragment)
+                                getSupportFragmentManager()
+                                        .findFragmentByTag(String.valueOf(R.id.nav_cities));
+                        if (addCityFragment != null) {
+                            addCityFragment.notifyDataUpdated();
+                        }
+                    }
+                }
+            } else if (result.equals(ERROR)) {
+                showToast(getString(R.string.error));
+            } else {
+                showToast(getString(R.string.smth_went_wrong));
+            }
+        }
     }
 }

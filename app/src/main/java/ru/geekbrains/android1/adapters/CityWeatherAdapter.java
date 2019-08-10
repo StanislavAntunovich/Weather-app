@@ -11,6 +11,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import ru.geekbrains.android1.R;
 import ru.geekbrains.android1.data.WeatherDataSource;
 import ru.geekbrains.android1.data.WeatherDetailsData;
@@ -20,10 +24,15 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
     private WeatherDataSource dataSource;
     private OnItemClickListener listener;
     private Activity activity;
+    private SimpleDateFormat formatter;
+    private Date currentDate;
 
     public CityWeatherAdapter(WeatherDataSource dataSource, Activity activity) {
         this.dataSource = dataSource;
         this.activity = activity;
+        this.currentDate = new Date();
+        Locale locale = activity.getResources().getConfiguration().locale;
+        this.formatter = new SimpleDateFormat("EEEE, MMM dd", locale);
     }
 
     @NonNull
@@ -35,6 +44,8 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull CityWeatherViewHolder holder, int position) {
+        String date = formatter.format(currentDate);
+        holder.txtDate.setText(date);
         holder.btnShowForecast.setVisibility(
                 activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ?
                         View.GONE : View.VISIBLE
@@ -67,10 +78,12 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
         private TextView txtCity;
         private TextView txtTemperature;
         private TextView txtWeatherCondition;
+        private TextView txtDate;
         private Button btnShowForecast;
 
         CityWeatherViewHolder(@NonNull View itemView) {
             super(itemView);
+            txtDate = itemView.findViewById(R.id.text_date);
             txtCity = itemView.findViewById(R.id.text_city);
             txtTemperature = itemView.findViewById(R.id.temperature_main_val);
             txtWeatherCondition = itemView.findViewById(R.id.weather_type);
@@ -98,5 +111,8 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
             return txtWeatherCondition;
         }
 
+        public TextView getTxtDate() {
+            return txtDate;
+        }
     }
 }

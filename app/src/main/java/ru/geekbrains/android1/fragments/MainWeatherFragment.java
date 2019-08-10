@@ -1,5 +1,6 @@
 package ru.geekbrains.android1.fragments;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ru.geekbrains.android1.MainActivity;
 import ru.geekbrains.android1.R;
@@ -26,6 +28,8 @@ import ru.geekbrains.android1.data.ForecastData;
 import ru.geekbrains.android1.data.WeatherDataSource;
 import ru.geekbrains.android1.data.WeatherDetailsData;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
+import ru.geekbrains.android1.presenters.SettingsPresenter;
+import ru.geekbrains.android1.service.WeatherReceiveService;
 
 public class MainWeatherFragment extends Fragment {
     private boolean isHorizontal;
@@ -33,9 +37,11 @@ public class MainWeatherFragment extends Fragment {
     private ForecastListener listener;
 
     private CurrentInfoPresenter indexPresenter;
+    private SettingsPresenter settingsPresenter;
     private LinearLayout paginationLayout;
 
     private List<ImageView> pagination;
+    private CityWeatherAdapter adapter;
 
 
     @Override
@@ -48,6 +54,7 @@ public class MainWeatherFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         indexPresenter = CurrentInfoPresenter.getInstance();
+        settingsPresenter = SettingsPresenter.getInstance();
         pagination = new ArrayList<>();
 
         return inflater.inflate(R.layout.fragment_main_weather, container, false);
@@ -62,13 +69,14 @@ public class MainWeatherFragment extends Fragment {
 
         setRecycler(view);
         makePagination();
+        sendUpdateRequest(dataSource.getData(indexPresenter.getCurrentIndex()).getCity());
 
         super.onViewCreated(view, savedInstanceState);
     }
 
 
     private void setRecycler(@NonNull View view) {
-        CityWeatherAdapter adapter = new CityWeatherAdapter(dataSource, getActivity());
+        adapter = new CityWeatherAdapter(dataSource, getActivity());
         adapter.setListener(city ->
                 showForecast(view, dataSource.getData(city).getForecast())
         );
@@ -89,12 +97,21 @@ public class MainWeatherFragment extends Fragment {
                             index != indexPresenter.getCurrentIndex()) {
                         changePagePosition(indexPresenter.getCurrentIndex(), index);
                         indexPresenter.setCurrentIndex(index);
-                        changeData(dataSource.getData(index));
+                        changeData(index);
+                        sendUpdateRequest(dataSource.getData(index).getCity());
                     }
                 }
             }
         });
         recycler.scrollToPosition(indexPresenter.getCurrentIndex());
+    }
+
+    private void sendUpdateRequest(String city) {
+        Intent intent = new Intent(getContext(), WeatherReceiveService.class);
+        intent.putExtra(MainActivity.CITY, city);
+        intent.putExtra(MainActivity.ACTION, MainActivity.ACTION_SET);
+        intent.putExtra(MainActivity.LANG, settingsPresenter.getCurrentLocale().getLanguage());
+        Objects.requireNonNull(getActivity()).startService(intent);
     }
 
     private void makePagination() {
@@ -117,7 +134,8 @@ public class MainWeatherFragment extends Fragment {
 
     }
 
-    private void changeData(WeatherDetailsData data) {
+    private void changeData(int index) {
+        WeatherDetailsData data = dataSource.getData(index);
         Fragment fragment = DetailsWeatherFragment.create(data);
         if (getFragmentManager() != null) {
             getFragmentManager().beginTransaction()
@@ -144,6 +162,11 @@ public class MainWeatherFragment extends Fragment {
 
     public void setListener(ForecastListener listener) {
         this.listener = listener;
+    }
+
+    public void notifyDataUpdated() {
+        adapter.notifyDataSetChanged();
+        changeData(indexPresenter.getCurrentIndex());
     }
 
     public static MainWeatherFragment create(WeatherDataSource dataSource) {
