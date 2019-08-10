@@ -76,7 +76,7 @@ public class MainWeatherFragment extends Fragment {
 
 
     private void setRecycler(@NonNull View view) {
-        adapter = new CityWeatherAdapter(dataSource, getActivity());
+        adapter = new CityWeatherAdapter(dataSource, Objects.requireNonNull(getActivity()));
         adapter.setListener(city ->
                 showForecast(view, dataSource.getData(city).getForecast())
         );
