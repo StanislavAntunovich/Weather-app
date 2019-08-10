@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import ru.geekbrains.android1.data.ForecastData;
+import ru.geekbrains.android1.presenters.SettingsPresenter;
 
 public class ForecastDataImpl implements ForecastData {
 
@@ -26,12 +27,13 @@ public class ForecastDataImpl implements ForecastData {
 
     @Override
     public String getDay() {
-//        SettingsPresenter settings = SettingsPresenter.getInstance();
+        SettingsPresenter settings = SettingsPresenter.getInstance();
+        Locale locale = settings.getCurrentLocale();
         String day = null;
         try {
-            Date parsedDate = new SimpleDateFormat("yyyy-MM-dd", new Locale("en"))
+            Date parsedDate = new SimpleDateFormat("yyyy-MM-dd", locale)
                     .parse(date);
-            day = new SimpleDateFormat("EEEE", new Locale("en")).format(parsedDate);
+            day = new SimpleDateFormat("EEEE", locale).format(parsedDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
