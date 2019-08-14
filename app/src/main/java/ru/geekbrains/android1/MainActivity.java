@@ -27,7 +27,6 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.Locale;
 import java.util.Objects;
 
-import ru.geekbrains.android1.data.DataSourceImp;
 import ru.geekbrains.android1.data.ForecastData;
 import ru.geekbrains.android1.data.WeatherDataSource;
 import ru.geekbrains.android1.data.WeatherDetailsData;
@@ -38,6 +37,7 @@ import ru.geekbrains.android1.fragments.SettingsFragment;
 import ru.geekbrains.android1.fragments.WeekForecastFragment;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
 import ru.geekbrains.android1.presenters.SettingsPresenter;
+import ru.geekbrains.android1.utils.SharedPrefsSettings;
 import ru.geekbrains.android1.view.SensorsView;
 
 import static ru.geekbrains.android1.service.WeatherReceiveService.BROADCAST_ACTION;
@@ -87,7 +87,9 @@ public class MainActivity extends AppCompatActivity {
         sensorsView.addSensor(Sensor.TYPE_RELATIVE_HUMIDITY, getString(R.string.current_humidity));
 
         if (savedInstanceState == null) {
-            dataSource = new DataSourceImp();
+            Context context = getApplicationContext();
+            SharedPrefsSettings.readSettings(context);
+            dataSource = SharedPrefsSettings.readDataSource(context);
         }
 
     }
@@ -105,6 +107,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         unregisterReceiver(receiver);
+        Context context = getApplicationContext();
+        SharedPrefsSettings.saveDataSource(context, dataSource);
+        int index = currentInfoPresenter.getCurrentIndex();
+        SharedPrefsSettings.saveCurrentIndex(context, index);
     }
 
     @Override

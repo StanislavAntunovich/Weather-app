@@ -1,5 +1,6 @@
 package ru.geekbrains.android1.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.Objects;
+
 import ru.geekbrains.android1.R;
 import ru.geekbrains.android1.presenters.SettingsPresenter;
+import ru.geekbrains.android1.utils.SharedPrefsSettings;
 
 public class SettingsFragment extends Fragment {
     private SettingsPresenter settingsPresenter;
@@ -58,12 +62,19 @@ public class SettingsFragment extends Fragment {
     }
 
     private void setListeners() {
-        humidityCB.setOnCheckedChangeListener((btnView, isChecked) ->
-                settingsPresenter.setHumidityChecked(isChecked));
-        pressureCB.setOnCheckedChangeListener((btnView, isChecked) ->
-                settingsPresenter.setPressureChecked(isChecked));
-        windCB.setOnCheckedChangeListener((btnView, isChecked) ->
-                settingsPresenter.setWindChecked(isChecked));
+        Context context = Objects.requireNonNull(getContext());
+        humidityCB.setOnCheckedChangeListener((btnView, isChecked) -> {
+            settingsPresenter.setHumidityChecked(isChecked);
+            SharedPrefsSettings.saveHumidity(context, isChecked);
+        });
+        pressureCB.setOnCheckedChangeListener((btnView, isChecked) -> {
+            settingsPresenter.setPressureChecked(isChecked);
+            SharedPrefsSettings.savePressure(context, isChecked);
+        });
+        windCB.setOnCheckedChangeListener((btnView, isChecked) -> {
+            settingsPresenter.setWindChecked(isChecked);
+            SharedPrefsSettings.saveWind(context, isChecked);
+        });
 
         tempUnitSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
