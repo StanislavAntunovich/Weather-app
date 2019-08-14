@@ -21,6 +21,8 @@ public interface WeatherDetailsData extends Serializable {
 
     ForecastData[] getForecast();
 
-    void setForecast(ForecastData[] forecast); //TODO убрать когда будет настоящий
+    void setCity(String city);
+
+    void setForecast(ForecastData[] forecast);
 
 }

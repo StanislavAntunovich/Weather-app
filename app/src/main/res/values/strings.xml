@@ -1,25 +1,6 @@
 <resources>
     <string name="app_name">Weather App</string>
 
-    <string-array name="conditions">
-        <item>Cloudy</item>
-        <item>Partly Cloudy</item>
-        <item>Sunny</item>
-        <item>Rainy</item>
-        <item>Windy</item>
-        <item>Snowy</item>
-    </string-array>
-
-    <string-array name="days_of_week">
-        <item>Monday</item>
-        <item>Tuesday</item>
-        <item>Wednesday</item>
-        <item>Thursday</item>
-        <item>Friday</item>
-        <item>Saturday</item>
-        <item>Sunday</item>
-    </string-array>
-
     <string name="humidity">Humidity</string>
     <string name="pressure">Pressure</string>
     <string name="wind">Wind</string>
@@ -74,15 +55,7 @@
     <string name="current_humidity">Current humidity: </string>
     <string name="current_temperature">Current Temperature:</string>
 
-    <string-array name="cities">
-        <item>Moscow</item>
-        <item>Saint-Petersburg</item>
-        <item>Ryazan</item>
-        <item>Novosibirsk</item>
-        <item>Vyborg</item>
-        <item>Novgorod</item>
-        <item>Murmansk</item>
-    </string-array>
+    <string name="smth_went_wrong">Something went wrong</string>
 
     <string-array name="temp_units">
         <item>C°</item>

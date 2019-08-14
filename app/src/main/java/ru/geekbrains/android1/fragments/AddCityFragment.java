@@ -1,5 +1,6 @@
 package ru.geekbrains.android1.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +16,15 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Objects;
+
 import ru.geekbrains.android1.MainActivity;
 import ru.geekbrains.android1.R;
 import ru.geekbrains.android1.adapters.CityListAdapter;
 import ru.geekbrains.android1.data.WeatherDataSource;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
+import ru.geekbrains.android1.presenters.SettingsPresenter;
+import ru.geekbrains.android1.service.WeatherReceiveService;
 
 public class AddCityFragment extends Fragment {
     private WeatherDataSource dataSource;
@@ -28,6 +33,7 @@ public class AddCityFragment extends Fragment {
     private CityListAdapter adapter;
 
     private RecyclerView recycler;
+    private SettingsPresenter settingsPresenter;
 
     private EditText editCity;
     private Button btnAddCity;
@@ -36,6 +42,7 @@ public class AddCityFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        settingsPresenter = SettingsPresenter.getInstance();
         Bundle args = getArguments();
         if (args != null) {
             dataSource = (WeatherDataSource) args.getSerializable(MainActivity.DATA_SOURCE);
@@ -88,10 +95,8 @@ public class AddCityFragment extends Fragment {
                     .show();
             return;
         }
-        dataSource.addData(city);
+        sendRequest(city);
         editCity.setText("");
-        recycler.scrollToPosition(dataSource.size() - 1);
-        adapter.notifyItemInserted(dataSource.size() - 1);
     }
 
     private void done(View view) {
@@ -99,13 +104,25 @@ public class AddCityFragment extends Fragment {
         if (getActivity() != null) {
             getActivity().onBackPressed();
         }
+    }
 
+    private void sendRequest(String city) {
+        Intent intent = new Intent(getContext(), WeatherReceiveService.class);
+        intent.putExtra(MainActivity.CITY, city);
+        intent.putExtra(MainActivity.ACTION, MainActivity.ACTION_ADD);
+        intent.putExtra(MainActivity.LANG, settingsPresenter.getCurrentLocale().getLanguage());
+        Objects.requireNonNull(getActivity()).startService(intent);
     }
 
     private void fixIndex() {
         if (dataSource.size() < presenter.getCurrentIndex()) {
             presenter.setCurrentIndex(dataSource.size() - 1);
         }
+    }
+
+    public void notifyDataUpdated() {
+        recycler.scrollToPosition(dataSource.size() - 1);
+        adapter.notifyItemInserted(dataSource.size() - 1);
     }
 
     public static AddCityFragment create(WeatherDataSource dataSource) {
