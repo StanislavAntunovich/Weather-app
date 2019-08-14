@@ -107,10 +107,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         unregisterReceiver(receiver);
-        Context context = getApplicationContext();
-        SharedPrefsSettings.saveDataSource(context, dataSource);
-        int index = currentInfoPresenter.getCurrentIndex();
-        SharedPrefsSettings.saveCurrentIndex(context, index);
+        savePreferences();
     }
 
     @Override
@@ -175,6 +172,13 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         }
+    }
+
+    private void savePreferences() {
+        Context context = getApplicationContext();
+        SharedPrefsSettings.saveDataSource(context, dataSource);
+        int index = currentInfoPresenter.getCurrentIndex();
+        SharedPrefsSettings.saveCurrentIndex(context, index);
     }
 
 
