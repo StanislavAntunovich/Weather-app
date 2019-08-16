@@ -257,14 +257,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showForecast() {
-        sensorsView.unregisterListeners();
-        currentInfoPresenter.getFragmentsIndexes().push(R.id.nav_forecast);
-        navigationView.setCheckedItem(R.id.nav_forecast);
+        int currentIndex = currentInfoPresenter.getCurrentIndex();
+        if (currentIndex < 0 || dataSource.isEmpty()) {
+            showAddCity();
+        } else {
+            sensorsView.unregisterListeners();
+            currentInfoPresenter.getFragmentsIndexes().push(R.id.nav_forecast);
+            navigationView.setCheckedItem(R.id.nav_forecast);
 
-        ForecastData[] data = dataSource.getData(currentInfoPresenter.getCurrentIndex()).getForecast();
-        Fragment forecastFragment = WeekForecastFragment.create(data);
+            ForecastData[] data = dataSource.getData(currentInfoPresenter.getCurrentIndex()).getForecast();
+            Fragment forecastFragment = WeekForecastFragment.create(data);
 
-        startFragment(R.id.main_container, forecastFragment, String.valueOf(R.id.nav_forecast));
+            startFragment(R.id.main_container, forecastFragment, String.valueOf(R.id.nav_forecast));
+        }
     }
 
     private void showAddCity() {

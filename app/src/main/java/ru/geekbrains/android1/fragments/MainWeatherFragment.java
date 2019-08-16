@@ -107,10 +107,11 @@ public class MainWeatherFragment extends Fragment {
     }
 
     private void sendUpdateRequest(String city) {
+        String lang = settingsPresenter.getCurrentLocale().getLanguage();
         Intent intent = new Intent(getContext(), WeatherReceiveService.class);
         intent.putExtra(MainActivity.CITY, city);
         intent.putExtra(MainActivity.ACTION, MainActivity.ACTION_SET);
-        intent.putExtra(MainActivity.LANG, settingsPresenter.getCurrentLocale().getLanguage());
+        intent.putExtra(MainActivity.LANG, lang);
         Objects.requireNonNull(getActivity()).startService(intent);
     }
 
