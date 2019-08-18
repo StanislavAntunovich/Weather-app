@@ -51,4 +51,9 @@ public class ForecastDataImpl implements ForecastData {
     public String getLowTemperature() {
         return String.valueOf(minTemp);
     }
+
+    @Override
+    public int getWeatherCode() {
+        return condition.getWeatherCode();
+    }
 }
