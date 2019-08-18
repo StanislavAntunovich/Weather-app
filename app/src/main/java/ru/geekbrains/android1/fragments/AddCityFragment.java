@@ -90,6 +90,7 @@ public class AddCityFragment extends Fragment {
         adapter.setOnClickListener(city -> {
             adapter.notifyItemRemoved(dataSource.getIndex(city));
             dataSource.removeData(city);
+            fixIndex();
             ((MainActivity) Objects.requireNonNull(getActivity())).savePreferences();
         });
     }
@@ -137,14 +138,19 @@ public class AddCityFragment extends Fragment {
     }
 
     private void fixIndex() {
-        if (dataSource.size() < presenter.getCurrentIndex()) {
-            presenter.setCurrentIndex(dataSource.size() - 1);
+        int currentIndex = presenter.getCurrentIndex();
+        int lastPossibleIndex = dataSource.size() - 1;
+        if (currentIndex > lastPossibleIndex ||
+                (currentIndex < 0 && lastPossibleIndex >= 0)) {
+            currentIndex = lastPossibleIndex;
+            presenter.setCurrentIndex(currentIndex);
         }
     }
 
     private void notifyDataUpdated() {
         recycler.scrollToPosition(dataSource.size() - 1);
         adapter.notifyItemInserted(dataSource.size() - 1);
+        fixIndex();
         ((MainActivity) Objects.requireNonNull(getActivity())).savePreferences();
     }
 

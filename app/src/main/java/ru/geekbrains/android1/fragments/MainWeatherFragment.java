@@ -28,13 +28,11 @@ import retrofit2.internal.EverythingIsNonNull;
 import ru.geekbrains.android1.MainActivity;
 import ru.geekbrains.android1.R;
 import ru.geekbrains.android1.adapters.CityWeatherAdapter;
-import ru.geekbrains.android1.data.ForecastData;
 import ru.geekbrains.android1.data.WeatherDataSource;
 import ru.geekbrains.android1.data.WeatherDetailsData;
 import ru.geekbrains.android1.network.WeatherDataLoader;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
 import ru.geekbrains.android1.presenters.SettingsPresenter;
-import ru.geekbrains.android1.rest.entities.ForecastRequest;
 import ru.geekbrains.android1.rest.entities.WeatherRequest;
 
 public class MainWeatherFragment extends Fragment {
@@ -69,7 +67,8 @@ public class MainWeatherFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         if (getArguments() != null) {
-            dataSource = (WeatherDataSource) getArguments().getSerializable(MainActivity.DATA_SOURCE); // TODO on savedInstance
+            dataSource = (WeatherDataSource) getArguments()
+                    .getSerializable(MainActivity.DATA_SOURCE);
         }
         paginationLayout = view.findViewById(R.id.ll_pagination);
 
@@ -84,7 +83,7 @@ public class MainWeatherFragment extends Fragment {
     private void setRecycler(@NonNull View view) {
         adapter = new CityWeatherAdapter(dataSource, Objects.requireNonNull(getActivity()));
         adapter.setListener(city ->
-                showForecast(view, dataSource.getData(city).getForecast())
+                showForecast(view)
         );
 
         RecyclerView recycler = view.findViewById(R.id.recycler_main_weather);
@@ -135,24 +134,6 @@ public class MainWeatherFragment extends Fragment {
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
-
-        WeatherDataLoader.loadForecast(city, lang, "M", 7,
-                new Callback<ForecastRequest>() {
-                    @Override
-                    @EverythingIsNonNull
-                    public void onResponse(Call<ForecastRequest> call, Response<ForecastRequest> response) {
-                        if (response.body() != null && response.isSuccessful()) {
-                            ForecastData[] data = response.body().getData();
-                            dataSource.getData(city).setForecast(data); //TODO null
-                            notifyDataUpdated();
-                        }
-                    }
-
-                    @Override
-                    @EverythingIsNonNull
-                    public void onFailure(Call<ForecastRequest> call, Throwable t) {
-                    }
-                });
     }
 
     private void makePagination() {
@@ -183,14 +164,14 @@ public class MainWeatherFragment extends Fragment {
                     .replace(R.id.weather_details_container, fragment)
                     .commit();
         }
-        showForecast(null, data.getForecast());
+        showForecast(null);
     }
 
-    private void showForecast(View view, ForecastData[] forecast) {
+    private void showForecast(View view) {
         FragmentManager manager = getFragmentManager();
 
         if (isHorizontal && manager != null) {
-            Fragment fragment = ForecastFragment.create(forecast);
+            Fragment fragment = ForecastFragment.create(dataSource);
             manager.beginTransaction()
                     .replace(R.id.forecast_container, fragment)
                     .commit();

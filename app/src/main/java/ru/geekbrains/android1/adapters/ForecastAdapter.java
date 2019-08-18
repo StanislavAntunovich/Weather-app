@@ -47,6 +47,10 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
         return 0;
     }
 
+    public void setData(ForecastData[] data) {
+        this.data = data;
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtDay;
         private TextView txtHighTemp;

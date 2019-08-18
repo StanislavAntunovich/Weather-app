@@ -24,7 +24,6 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.Locale;
 
-import ru.geekbrains.android1.data.ForecastData;
 import ru.geekbrains.android1.data.WeatherDataSource;
 import ru.geekbrains.android1.fragments.AddCityFragment;
 import ru.geekbrains.android1.fragments.DetailsWeatherFragment;
@@ -207,8 +206,7 @@ public class MainActivity extends AppCompatActivity {
         currentInfoPresenter.getFragmentsIndexes().clear();
         currentInfoPresenter.getFragmentsIndexes().push(R.id.nav_home);
 
-        int currentIndex = checkCurrentIndex();
-//        int currentIndex = currentInfoPresenter.getCurrentIndex();
+        int currentIndex = currentInfoPresenter.getCurrentIndex();
 
         if (currentIndex < 0 || dataSource.isEmpty()) {
             showAddCity();
@@ -223,23 +221,10 @@ public class MainActivity extends AppCompatActivity {
             startFragment(R.id.weather_details_container, detailsFragment, null);
 
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                Fragment forecastFragment = ForecastFragment.create(
-                        dataSource.getData(currentIndex).getForecast()
-                );
+                Fragment forecastFragment = ForecastFragment.create(dataSource);
                 startFragment(R.id.forecast_container, forecastFragment, String.valueOf(R.id.nav_forecast));
             }
         }
-    }
-
-    private int checkCurrentIndex() {
-        int currentIndex = currentInfoPresenter.getCurrentIndex();
-        int lastPossibleIndex = dataSource.size() - 1;
-        if (currentIndex > lastPossibleIndex ||
-                (currentIndex < 0 && lastPossibleIndex >= 0)) {
-            currentIndex = lastPossibleIndex;
-            currentInfoPresenter.setCurrentIndex(currentIndex);
-        }
-        return currentIndex;
     }
 
     private void showForecast() {
@@ -251,8 +236,7 @@ public class MainActivity extends AppCompatActivity {
             currentInfoPresenter.getFragmentsIndexes().push(R.id.nav_forecast);
             navigationView.setCheckedItem(R.id.nav_forecast);
 
-            ForecastData[] data = dataSource.getData(currentInfoPresenter.getCurrentIndex()).getForecast();
-            Fragment forecastFragment = ForecastFragment.create(data);
+            Fragment forecastFragment = ForecastFragment.create(dataSource);
 
             startFragment(R.id.main_container, forecastFragment, String.valueOf(R.id.nav_forecast));
         }
