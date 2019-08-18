@@ -17,7 +17,7 @@ import ru.geekbrains.android1.adapters.ForecastAdapter;
 import ru.geekbrains.android1.data.ForecastData;
 
 
-public class WeekForecastFragment extends Fragment {
+public class ForecastFragment extends Fragment {
 
     @Nullable
     @Override
@@ -44,8 +44,8 @@ public class WeekForecastFragment extends Fragment {
         recycler.setAdapter(adapter);
     }
 
-    public static WeekForecastFragment create(ForecastData[] forecast) {
-        WeekForecastFragment fragment = new WeekForecastFragment();
+    public static ForecastFragment create(ForecastData[] forecast) {
+        ForecastFragment fragment = new ForecastFragment();
         Bundle args = new Bundle();
         args.putSerializable(MainActivity.FORECAST, forecast);
         fragment.setArguments(args);

@@ -1,6 +1,5 @@
 package ru.geekbrains.android1.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,13 +17,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.internal.EverythingIsNonNull;
 import ru.geekbrains.android1.MainActivity;
 import ru.geekbrains.android1.R;
 import ru.geekbrains.android1.adapters.CityListAdapter;
 import ru.geekbrains.android1.data.WeatherDataSource;
+import ru.geekbrains.android1.data.WeatherDetailsData;
+import ru.geekbrains.android1.network.WeatherDataLoader;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
 import ru.geekbrains.android1.presenters.SettingsPresenter;
-import ru.geekbrains.android1.service.WeatherReceiveService;
+import ru.geekbrains.android1.rest.entities.WeatherRequest;
 
 public class AddCityFragment extends Fragment {
     private WeatherDataSource dataSource;
@@ -85,13 +90,14 @@ public class AddCityFragment extends Fragment {
         adapter.setOnClickListener(city -> {
             adapter.notifyItemRemoved(dataSource.getIndex(city));
             dataSource.removeData(city);
+            ((MainActivity) Objects.requireNonNull(getActivity())).savePreferences();
         });
     }
 
     private void addCity(View view) {
         String city = editCity.getText().toString();
         if (city.isEmpty()) {
-            Toast.makeText(getContext(), R.string.fill_city_name,Toast.LENGTH_SHORT)
+            Toast.makeText(getContext(), R.string.fill_city_name, Toast.LENGTH_SHORT)
                     .show();
             return;
         }
@@ -107,11 +113,27 @@ public class AddCityFragment extends Fragment {
     }
 
     private void sendRequest(String city) {
-        Intent intent = new Intent(getContext(), WeatherReceiveService.class);
-        intent.putExtra(MainActivity.CITY, city);
-        intent.putExtra(MainActivity.ACTION, MainActivity.ACTION_ADD);
-        intent.putExtra(MainActivity.LANG, settingsPresenter.getCurrentLocale().getLanguage());
-        Objects.requireNonNull(getActivity()).startService(intent);
+        String lang = settingsPresenter.getCurrentLocale().getLanguage();
+        WeatherDataLoader.loadCurrentWeather(city, lang, "M", new Callback<WeatherRequest>() {
+            @Override
+            @EverythingIsNonNull
+            public void onResponse(Call<WeatherRequest> call,
+                                   Response<WeatherRequest> response) {
+                if (response.body() != null && response.isSuccessful()) {
+                    WeatherDetailsData data = response.body().getData()[0];
+                    data.setCity(city);
+                    dataSource.addData(data);
+                    notifyDataUpdated();
+                }
+            }
+
+            @Override
+            @EverythingIsNonNull
+            public void onFailure(Call<WeatherRequest> call, Throwable t) {
+                Toast.makeText(getContext(), "network error",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void fixIndex() {
@@ -120,9 +142,10 @@ public class AddCityFragment extends Fragment {
         }
     }
 
-    public void notifyDataUpdated() {
+    private void notifyDataUpdated() {
         recycler.scrollToPosition(dataSource.size() - 1);
         adapter.notifyItemInserted(dataSource.size() - 1);
+        ((MainActivity) Objects.requireNonNull(getActivity())).savePreferences();
     }
 
     public static AddCityFragment create(WeatherDataSource dataSource) {

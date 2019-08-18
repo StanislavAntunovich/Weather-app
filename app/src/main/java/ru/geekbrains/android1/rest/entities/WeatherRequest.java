@@ -1,4 +1,4 @@
-package ru.geekbrains.android1.model;
+package ru.geekbrains.android1.rest.entities;
 
 public class WeatherRequest {
     private CurrentWeatherDataImpl[] data;

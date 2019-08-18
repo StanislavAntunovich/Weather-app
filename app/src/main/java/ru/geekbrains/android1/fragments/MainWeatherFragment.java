@@ -1,6 +1,5 @@
 package ru.geekbrains.android1.fragments;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,15 +21,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.internal.EverythingIsNonNull;
 import ru.geekbrains.android1.MainActivity;
 import ru.geekbrains.android1.R;
 import ru.geekbrains.android1.adapters.CityWeatherAdapter;
 import ru.geekbrains.android1.data.ForecastData;
 import ru.geekbrains.android1.data.WeatherDataSource;
 import ru.geekbrains.android1.data.WeatherDetailsData;
+import ru.geekbrains.android1.network.WeatherDataLoader;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
 import ru.geekbrains.android1.presenters.SettingsPresenter;
-import ru.geekbrains.android1.service.WeatherReceiveService;
+import ru.geekbrains.android1.rest.entities.ForecastRequest;
+import ru.geekbrains.android1.rest.entities.WeatherRequest;
 
 public class MainWeatherFragment extends Fragment {
     private boolean isHorizontal;
@@ -108,11 +114,45 @@ public class MainWeatherFragment extends Fragment {
 
     private void sendUpdateRequest(String city) {
         String lang = settingsPresenter.getCurrentLocale().getLanguage();
-        Intent intent = new Intent(getContext(), WeatherReceiveService.class);
-        intent.putExtra(MainActivity.CITY, city);
-        intent.putExtra(MainActivity.ACTION, MainActivity.ACTION_SET);
-        intent.putExtra(MainActivity.LANG, lang);
-        Objects.requireNonNull(getActivity()).startService(intent);
+        WeatherDataLoader.loadCurrentWeather(city, lang, "M",
+                new Callback<WeatherRequest>() {
+                    @Override
+                    @EverythingIsNonNull
+                    public void onResponse(Call<WeatherRequest> call,
+                                           Response<WeatherRequest> response) {
+                        if (response.body() != null && response.isSuccessful()) {
+                            WeatherDetailsData data = response.body().getData()[0];
+                            data.setCity(city);
+                            dataSource.setData(city, data);
+                            notifyDataUpdated();
+                        }
+                    }
+
+                    @Override
+                    @EverythingIsNonNull
+                    public void onFailure(Call<WeatherRequest> call, Throwable t) {
+                        Toast.makeText(getContext(), "network error",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        WeatherDataLoader.loadForecast(city, lang, "M", 7,
+                new Callback<ForecastRequest>() {
+                    @Override
+                    @EverythingIsNonNull
+                    public void onResponse(Call<ForecastRequest> call, Response<ForecastRequest> response) {
+                        if (response.body() != null && response.isSuccessful()) {
+                            ForecastData[] data = response.body().getData();
+                            dataSource.getData(city).setForecast(data); //TODO null
+                            notifyDataUpdated();
+                        }
+                    }
+
+                    @Override
+                    @EverythingIsNonNull
+                    public void onFailure(Call<ForecastRequest> call, Throwable t) {
+                    }
+                });
     }
 
     private void makePagination() {
@@ -150,7 +190,7 @@ public class MainWeatherFragment extends Fragment {
         FragmentManager manager = getFragmentManager();
 
         if (isHorizontal && manager != null) {
-            Fragment fragment = WeekForecastFragment.create(forecast);
+            Fragment fragment = ForecastFragment.create(forecast);
             manager.beginTransaction()
                     .replace(R.id.forecast_container, fragment)
                     .commit();
@@ -165,9 +205,10 @@ public class MainWeatherFragment extends Fragment {
         this.listener = listener;
     }
 
-    public void notifyDataUpdated() {
+    private void notifyDataUpdated() {
         adapter.notifyDataSetChanged();
         changeData(indexPresenter.getCurrentIndex());
+        ((MainActivity) Objects.requireNonNull(getActivity())).savePreferences();
     }
 
     public static MainWeatherFragment create(WeatherDataSource dataSource) {
