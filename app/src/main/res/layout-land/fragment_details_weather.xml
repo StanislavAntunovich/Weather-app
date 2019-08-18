@@ -33,6 +33,7 @@
             android:textSize="@dimen/text_details" />
 
         <TextView
+            android:id="@+id/txt_humidity_suffix"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -67,10 +68,11 @@
             android:textSize="@dimen/text_details" />
 
         <TextView
+            android:id="@+id/txt_pressure_suffix"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/pressure_suffix"
+            android:text="@string/pressure_suffix_m"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_details" />
 
@@ -101,10 +103,11 @@
             android:textSize="@dimen/text_details" />
 
         <TextView
+            android:id="@+id/txt_wind_suffix"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/wind_suffix"
+            android:text="@string/wind_suffix_m"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_details" />
 

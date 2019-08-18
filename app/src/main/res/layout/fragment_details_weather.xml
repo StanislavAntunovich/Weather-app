@@ -28,6 +28,7 @@
             tools:text="20" />
 
         <TextView
+            android:id="@+id/txt_humidity_suffix"
             style="@style/DetailsText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,10 +56,11 @@
             tools:text="950" />
 
         <TextView
+            android:id="@+id/txt_pressure_suffix"
             style="@style/DetailsText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/pressure_suffix" />
+            android:text="@string/pressure_suffix_m" />
 
     </LinearLayout>
 
@@ -83,10 +85,11 @@
             tools:text="4" />
 
         <TextView
+            android:id="@+id/txt_wind_suffix"
             style="@style/DetailsText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/wind_suffix" />
+            android:text="@string/wind_suffix_m" />
 
     </LinearLayout>
 

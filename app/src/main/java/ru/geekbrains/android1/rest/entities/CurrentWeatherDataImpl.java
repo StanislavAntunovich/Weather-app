@@ -67,6 +67,11 @@ public class CurrentWeatherDataImpl implements WeatherDetailsData {
         this.forecast = forecast;
     }
 
+    @Override
+    public int getWeatherCode() {
+        return conditions.getWeatherCode();
+    }
+
     public String getHumidity() {
         return String.valueOf(humidity);
     }

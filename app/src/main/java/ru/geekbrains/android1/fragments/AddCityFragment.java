@@ -30,6 +30,7 @@ import ru.geekbrains.android1.network.WeatherDataLoader;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
 import ru.geekbrains.android1.presenters.SettingsPresenter;
 import ru.geekbrains.android1.rest.entities.WeatherRequest;
+import ru.geekbrains.android1.utils.UnitsConverter;
 
 public class AddCityFragment extends Fragment {
     private WeatherDataSource dataSource;
@@ -114,8 +115,11 @@ public class AddCityFragment extends Fragment {
     }
 
     private void sendRequest(String city) {
+        int unitsIndex = settingsPresenter.getTempUnitIndex();
+        String units = UnitsConverter.getUntis(unitsIndex);
         String lang = settingsPresenter.getCurrentLocale().getLanguage();
-        WeatherDataLoader.loadCurrentWeather(city, lang, "M", new Callback<WeatherRequest>() {
+
+        WeatherDataLoader.loadCurrentWeather(city, lang, units, new Callback<WeatherRequest>() {
             @Override
             @EverythingIsNonNull
             public void onResponse(Call<WeatherRequest> call,
@@ -125,16 +129,21 @@ public class AddCityFragment extends Fragment {
                     data.setCity(city);
                     dataSource.addData(data);
                     notifyDataUpdated();
+                } else {
+                    showToast(R.string.city_not_found);
                 }
             }
 
             @Override
             @EverythingIsNonNull
             public void onFailure(Call<WeatherRequest> call, Throwable t) {
-                Toast.makeText(getContext(), "network error",
-                        Toast.LENGTH_SHORT).show();
+                showToast(R.string.network_error);
             }
         });
+    }
+
+    private void showToast(int text) {
+        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
     }
 
     private void fixIndex() {

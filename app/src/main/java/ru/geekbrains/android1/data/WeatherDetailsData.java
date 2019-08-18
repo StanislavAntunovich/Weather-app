@@ -25,4 +25,6 @@ public interface WeatherDetailsData extends Serializable {
 
     void setForecast(ForecastData[] forecast);
 
+    int getWeatherCode();
+
 }

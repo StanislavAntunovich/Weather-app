@@ -34,6 +34,7 @@ import ru.geekbrains.android1.network.WeatherDataLoader;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
 import ru.geekbrains.android1.presenters.SettingsPresenter;
 import ru.geekbrains.android1.rest.entities.WeatherRequest;
+import ru.geekbrains.android1.utils.UnitsConverter;
 
 public class MainWeatherFragment extends Fragment {
     private boolean isHorizontal;
@@ -112,8 +113,11 @@ public class MainWeatherFragment extends Fragment {
     }
 
     private void sendUpdateRequest(String city) {
+        int unitsIndex = settingsPresenter.getTempUnitIndex();
+        String units = UnitsConverter.getUntis(unitsIndex);
+
         String lang = settingsPresenter.getCurrentLocale().getLanguage();
-        WeatherDataLoader.loadCurrentWeather(city, lang, "M",
+        WeatherDataLoader.loadCurrentWeather(city, lang, units,
                 new Callback<WeatherRequest>() {
                     @Override
                     @EverythingIsNonNull
@@ -130,7 +134,7 @@ public class MainWeatherFragment extends Fragment {
                     @Override
                     @EverythingIsNonNull
                     public void onFailure(Call<WeatherRequest> call, Throwable t) {
-                        Toast.makeText(getContext(), "network error",
+                        Toast.makeText(getContext(), R.string.network_error,
                                 Toast.LENGTH_SHORT).show();
                     }
                 });

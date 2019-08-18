@@ -21,7 +21,8 @@ public final class SharedPrefsSettings {
     private static final String HUMIDITY = "HUMIDITY_SETTINGS";
     private static final String PRESSURE = "PRESSURE_SETTINGS";
     private static final String WIND = "WIND_SETTINGS";
-    private static final String INDEX = "INDEX_SETTINGS";
+    private static final String CURRENT_INDEX = "CURRENT_INDEX_SETTINGS";
+    private static final String UNITS_INDEX = "UNITS_INDEX_SETTINGS";
     private static final String PATH = "weather_datasource";
 
 
@@ -49,7 +50,14 @@ public final class SharedPrefsSettings {
     public static void saveCurrentIndex(Context context, int index) {
         SharedPreferences.Editor editor = getEditor(context);
 
-        editor.putInt(INDEX, index);
+        editor.putInt(CURRENT_INDEX, index);
+        editor.apply();
+    }
+
+    public static void saveUnitsIndex(Context context, int index) {
+        SharedPreferences.Editor editor = getEditor(context);
+
+        editor.putInt(UNITS_INDEX, index);
         editor.apply();
     }
 
@@ -108,11 +116,13 @@ public final class SharedPrefsSettings {
         boolean humidity = preferences.getBoolean(HUMIDITY, true);
         boolean pressure = preferences.getBoolean(PRESSURE, true);
         boolean wind = preferences.getBoolean(WIND, true);
-        int index = preferences.getInt(INDEX, 0);
+        int index = preferences.getInt(CURRENT_INDEX, 0);
+        int unitsIndex = preferences.getInt(UNITS_INDEX, 0);
 
         settingsPresenter.setHumidityChecked(humidity);
         settingsPresenter.setPressureChecked(pressure);
         settingsPresenter.setWindChecked(wind);
+        settingsPresenter.setTempUnitIndex(unitsIndex);
         infoPresenter.setCurrentIndex(index);
 
     }

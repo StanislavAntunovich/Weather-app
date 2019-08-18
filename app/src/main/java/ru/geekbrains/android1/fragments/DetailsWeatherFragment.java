@@ -20,6 +20,8 @@ public class DetailsWeatherFragment extends Fragment {
     private TextView txtHumidity;
     private TextView txtPressure;
     private TextView txtWind;
+    private TextView txtWindSuffix;
+    private TextView txtPressureSuffix;
 
     private SettingsPresenter presenter;
     private LinearLayout llHumidity;
@@ -62,6 +64,9 @@ public class DetailsWeatherFragment extends Fragment {
         txtPressure = view.findViewById(R.id.text_pressure_val);
         txtWind = view.findViewById(R.id.text_wind_val);
 
+        txtWindSuffix = view.findViewById(R.id.txt_wind_suffix);
+        txtPressureSuffix = view.findViewById(R.id.txt_pressure_suffix);
+
         llHumidity = view.findViewById(R.id.ll_humidity);
         llPressure = view.findViewById(R.id.ll_pressure);
         llWind = view.findViewById(R.id.ll_wind);
@@ -70,9 +75,35 @@ public class DetailsWeatherFragment extends Fragment {
 
 
     private void setData(WeatherDetailsData data) {
+        int unitsIndex = presenter.getTempUnitIndex();
+        String pressureSuffix = getPressureSuffix(unitsIndex);
+        String windSuffix = getHumSuffix(unitsIndex);
+
+        txtWindSuffix.setText(windSuffix);
+        txtPressureSuffix.setText(pressureSuffix);
         txtHumidity.setText(data.getHumidity());
         txtPressure.setText(data.getPressure());
         txtWind.setText(data.getWind());
+    }
+
+    private String getPressureSuffix(int unitsIndex) {
+        String pressureSuffix;
+        if (unitsIndex == 1) {
+            pressureSuffix = getString(R.string.pressure_suffix_f);
+        } else {
+            pressureSuffix = getString(R.string.pressure_suffix_m);
+        }
+        return pressureSuffix;
+    }
+
+    private String getHumSuffix(int unitsIndex) {
+        String windSuffix;
+        if (unitsIndex == 1) {
+            windSuffix = getString(R.string.wind_suffix_f);
+        } else {
+            windSuffix = getString(R.string.wind_suffix_m);
+        }
+        return windSuffix;
     }
 
     public static Fragment create(WeatherDetailsData data) {

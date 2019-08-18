@@ -28,6 +28,7 @@ import ru.geekbrains.android1.network.WeatherDataLoader;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
 import ru.geekbrains.android1.presenters.SettingsPresenter;
 import ru.geekbrains.android1.rest.entities.ForecastRequest;
+import ru.geekbrains.android1.utils.UnitsConverter;
 
 
 public class ForecastFragment extends Fragment {
@@ -63,7 +64,10 @@ public class ForecastFragment extends Fragment {
     }
 
     private void sendRequest(String city, String lang) {
-        WeatherDataLoader.loadForecast(city, lang, "M", 7,
+        int unitsIndex = settingsPresenter.getTempUnitIndex();
+        String units = UnitsConverter.getUntis(unitsIndex);
+
+        WeatherDataLoader.loadForecast(city, lang, units, 7,
                 new Callback<ForecastRequest>() {
                     @Override
                     @EverythingIsNonNull
@@ -79,7 +83,7 @@ public class ForecastFragment extends Fragment {
                     @Override
                     @EverythingIsNonNull
                     public void onFailure(Call<ForecastRequest> call, Throwable t) {
-                        Toast.makeText(getContext(), "network error",
+                        Toast.makeText(getContext(), R.string.network_error,
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -100,7 +104,6 @@ public class ForecastFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
 
 
 }
