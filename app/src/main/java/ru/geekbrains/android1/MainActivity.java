@@ -3,6 +3,7 @@ package ru.geekbrains.android1;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,9 +23,14 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.List;
 import java.util.Locale;
 
+import ru.geekbrains.android1.data.DataSourceImp;
 import ru.geekbrains.android1.data.WeatherDataSource;
+import ru.geekbrains.android1.data.WeatherDetailsData;
+import ru.geekbrains.android1.database.CityWeatherTable;
+import ru.geekbrains.android1.database.DBHelper;
 import ru.geekbrains.android1.fragments.AddCityFragment;
 import ru.geekbrains.android1.fragments.DetailsWeatherFragment;
 import ru.geekbrains.android1.fragments.ForecastFragment;
@@ -47,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private SensorsView sensorsView;
 
+    private SQLiteDatabase database;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,10 +73,18 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             Context context = getApplicationContext();
+            initDB(context);
             SharedPrefsSettings.readSettings(context);
-            dataSource = SharedPrefsSettings.readDataSource(context);
+            dataSource = getDataSource();
         }
 
+    }
+
+    private WeatherDataSource getDataSource() {
+        List<WeatherDetailsData> data = CityWeatherTable.getUsersCities(database);
+        WeatherDataSource dataSource = new DataSourceImp();
+        dataSource.setAll(data);
+        return dataSource;
     }
 
     @Override
@@ -149,9 +165,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void initDB(Context context) {
+        database = new DBHelper(context).getWritableDatabase();
+    }
+
     public void savePreferences() {
         Context context = getApplicationContext();
-        SharedPrefsSettings.saveDataSource(context, dataSource);
         int index = currentInfoPresenter.getCurrentIndex();
         SharedPrefsSettings.saveCurrentIndex(context, index);
     }
@@ -214,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
             navigationView.setCheckedItem(R.id.nav_home);
 
             MainWeatherFragment mainFragment = MainWeatherFragment.create(dataSource);
+            mainFragment.setDB(database);
             mainFragment.setListener(this::showForecast);
             Fragment detailsFragment = DetailsWeatherFragment.create(dataSource.getData(currentIndex));
 
@@ -248,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setCheckedItem(R.id.nav_cities);
 
         AddCityFragment addCityFragment = AddCityFragment.create(dataSource);
+        addCityFragment.setDB(database);
 
         startFragment(R.id.main_container, addCityFragment, String.valueOf(R.id.nav_cities));
     }

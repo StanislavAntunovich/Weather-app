@@ -4,17 +4,25 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class WeatherCondition implements Serializable {
+class WeatherCondition implements Serializable {
     @SerializedName("code")
     private int weatherCode;
 
     private String description;
 
-    public int getWeatherCode() {
+    int getWeatherCode() {
         return weatherCode;
     }
 
     String getDescription() {
         return description;
+    }
+
+    public void setWeatherCode(int weatherCode) {
+        this.weatherCode = weatherCode;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -3,16 +3,6 @@ package ru.geekbrains.android1.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
-import ru.geekbrains.android1.data.DataSourceImp;
-import ru.geekbrains.android1.data.WeatherDataSource;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
 import ru.geekbrains.android1.presenters.SettingsPresenter;
 
@@ -61,52 +51,6 @@ public final class SharedPrefsSettings {
         editor.apply();
     }
 
-    public static void saveDataSource(Context context, WeatherDataSource dataSource) {
-        String path = getPath(context);
-        File file;
-        FileOutputStream fileOutputStream;
-        ObjectOutputStream objectOutputStream;
-
-        try {
-            file = new File(path);
-
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-
-            fileOutputStream = new FileOutputStream(file, false);
-            objectOutputStream = new ObjectOutputStream(fileOutputStream);
-
-            objectOutputStream.writeObject(dataSource);
-
-            fileOutputStream.close();
-            objectOutputStream.close();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public static WeatherDataSource readDataSource(Context context) {
-        String path = getPath(context);
-        WeatherDataSource dataSource = null;
-
-        try {
-            FileInputStream fileInputStream = new FileInputStream(path);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-
-            dataSource = (WeatherDataSource) objectInputStream.readObject();
-
-            fileInputStream.close();
-            objectInputStream.close();
-        } catch (Exception exc) {
-            exc.printStackTrace();
-        }
-        return dataSource != null ? dataSource : new DataSourceImp();
-    }
 
     public static void readSettings(Context context) {
         SettingsPresenter settingsPresenter = SettingsPresenter.getInstance();
@@ -131,10 +75,6 @@ public final class SharedPrefsSettings {
         return context
                 .getSharedPreferences(PREFS, Context.MODE_PRIVATE)
                 .edit();
-    }
-
-    private static String getPath(Context context) {
-        return context.getFilesDir() + "/" + PATH;
     }
 
     private SharedPrefsSettings() {

@@ -39,6 +39,11 @@ public class DataSourceImp implements WeatherDataSource {
     }
 
     @Override
+    public void setAll(List<WeatherDetailsData> dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    @Override
     public int getIndex(String city) {
         for (int i = 0; i < dataSource.size(); i++) {
             if (city.equals(dataSource.get(i).getCity())) {
