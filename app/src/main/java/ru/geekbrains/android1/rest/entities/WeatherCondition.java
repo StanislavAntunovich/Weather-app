@@ -1,4 +1,4 @@
-package ru.geekbrains.android1.model;
+package ru.geekbrains.android1.rest.entities;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -6,15 +6,15 @@ import java.io.Serializable;
 
 public class WeatherCondition implements Serializable {
     @SerializedName("code")
-    private String weatherCode;
+    private int weatherCode;
 
     private String description;
 
-    public String getWeatherCode() {
+    public int getWeatherCode() {
         return weatherCode;
     }
 
-    public String getDescription() {
+    String getDescription() {
         return description;
     }
 }

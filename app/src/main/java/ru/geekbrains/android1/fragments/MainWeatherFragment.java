@@ -1,6 +1,5 @@
 package ru.geekbrains.android1.fragments;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,15 +21,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.internal.EverythingIsNonNull;
 import ru.geekbrains.android1.MainActivity;
 import ru.geekbrains.android1.R;
 import ru.geekbrains.android1.adapters.CityWeatherAdapter;
-import ru.geekbrains.android1.data.ForecastData;
 import ru.geekbrains.android1.data.WeatherDataSource;
 import ru.geekbrains.android1.data.WeatherDetailsData;
+import ru.geekbrains.android1.network.WeatherDataLoader;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
 import ru.geekbrains.android1.presenters.SettingsPresenter;
-import ru.geekbrains.android1.service.WeatherReceiveService;
+import ru.geekbrains.android1.rest.entities.WeatherRequest;
+import ru.geekbrains.android1.utils.UnitsConverter;
 
 public class MainWeatherFragment extends Fragment {
     private boolean isHorizontal;
@@ -63,7 +68,8 @@ public class MainWeatherFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         if (getArguments() != null) {
-            dataSource = (WeatherDataSource) getArguments().getSerializable(MainActivity.DATA_SOURCE); // TODO on savedInstance
+            dataSource = (WeatherDataSource) getArguments()
+                    .getSerializable(MainActivity.DATA_SOURCE);
         }
         paginationLayout = view.findViewById(R.id.ll_pagination);
 
@@ -78,7 +84,7 @@ public class MainWeatherFragment extends Fragment {
     private void setRecycler(@NonNull View view) {
         adapter = new CityWeatherAdapter(dataSource, Objects.requireNonNull(getActivity()));
         adapter.setListener(city ->
-                showForecast(view, dataSource.getData(city).getForecast())
+                showForecast(view)
         );
 
         RecyclerView recycler = view.findViewById(R.id.recycler_main_weather);
@@ -107,11 +113,31 @@ public class MainWeatherFragment extends Fragment {
     }
 
     private void sendUpdateRequest(String city) {
-        Intent intent = new Intent(getContext(), WeatherReceiveService.class);
-        intent.putExtra(MainActivity.CITY, city);
-        intent.putExtra(MainActivity.ACTION, MainActivity.ACTION_SET);
-        intent.putExtra(MainActivity.LANG, settingsPresenter.getCurrentLocale().getLanguage());
-        Objects.requireNonNull(getActivity()).startService(intent);
+        int unitsIndex = settingsPresenter.getTempUnitIndex();
+        String units = UnitsConverter.getUntis(unitsIndex);
+
+        String lang = settingsPresenter.getCurrentLocale().getLanguage();
+        WeatherDataLoader.loadCurrentWeather(city, lang, units,
+                new Callback<WeatherRequest>() {
+                    @Override
+                    @EverythingIsNonNull
+                    public void onResponse(Call<WeatherRequest> call,
+                                           Response<WeatherRequest> response) {
+                        if (response.body() != null && response.isSuccessful()) {
+                            WeatherDetailsData data = response.body().getData()[0];
+                            data.setCity(city);
+                            dataSource.setData(city, data);
+                            notifyDataUpdated();
+                        }
+                    }
+
+                    @Override
+                    @EverythingIsNonNull
+                    public void onFailure(Call<WeatherRequest> call, Throwable t) {
+                        Toast.makeText(getContext(), R.string.network_error,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void makePagination() {
@@ -142,14 +168,14 @@ public class MainWeatherFragment extends Fragment {
                     .replace(R.id.weather_details_container, fragment)
                     .commit();
         }
-        showForecast(null, data.getForecast());
+        showForecast(null);
     }
 
-    private void showForecast(View view, ForecastData[] forecast) {
+    private void showForecast(View view) {
         FragmentManager manager = getFragmentManager();
 
         if (isHorizontal && manager != null) {
-            Fragment fragment = WeekForecastFragment.create(forecast);
+            Fragment fragment = ForecastFragment.create(dataSource);
             manager.beginTransaction()
                     .replace(R.id.forecast_container, fragment)
                     .commit();
@@ -164,9 +190,10 @@ public class MainWeatherFragment extends Fragment {
         this.listener = listener;
     }
 
-    public void notifyDataUpdated() {
+    private void notifyDataUpdated() {
         adapter.notifyDataSetChanged();
         changeData(indexPresenter.getCurrentIndex());
+        ((MainActivity) Objects.requireNonNull(getActivity())).savePreferences();
     }
 
     public static MainWeatherFragment create(WeatherDataSource dataSource) {

@@ -1,4 +1,4 @@
-package ru.geekbrains.android1.model;
+package ru.geekbrains.android1.rest.entities;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -65,6 +65,11 @@ public class CurrentWeatherDataImpl implements WeatherDetailsData {
     @Override
     public void setForecast(ForecastData[] forecast) {
         this.forecast = forecast;
+    }
+
+    @Override
+    public int getWeatherCode() {
+        return conditions.getWeatherCode();
     }
 
     public String getHumidity() {

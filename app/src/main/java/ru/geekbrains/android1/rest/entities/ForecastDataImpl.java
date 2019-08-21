@@ -1,4 +1,4 @@
-package ru.geekbrains.android1.model;
+package ru.geekbrains.android1.rest.entities;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -33,7 +33,9 @@ public class ForecastDataImpl implements ForecastData {
         try {
             Date parsedDate = new SimpleDateFormat("yyyy-MM-dd", locale)
                     .parse(date);
-            day = new SimpleDateFormat("EEEE", locale).format(parsedDate);
+            if (parsedDate != null) {
+                day = new SimpleDateFormat("EEEE", locale).format(parsedDate);
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -48,5 +50,10 @@ public class ForecastDataImpl implements ForecastData {
     @Override
     public String getLowTemperature() {
         return String.valueOf(minTemp);
+    }
+
+    @Override
+    public int getWeatherCode() {
+        return condition.getWeatherCode();
     }
 }

@@ -7,6 +7,7 @@
 
     <string name="city_not_found">City not found</string>
     <string name="error">Error</string>
+    <string name="network_error">NetWork Error</string>
 
     <!--images description-->
     <string name="desc_weather_icon">current weather icon</string>
@@ -14,12 +15,14 @@
     <string name="desc_pressure_icon">pressure icon</string>
     <string name="desc_wind_icon">wind icon</string>
 
-    <string name="pressure_suffix">mm</string>
+    <string name="pressure_suffix_m">mm</string>
+    <string name="pressure_suffix_f">in</string>
     <string name="moscow">Moscow</string>
     <string name="humidity_suffix">%</string>
     <string name="date_val">Saturday, July 6</string>
     <string name="temperature_suffix">°</string>
-    <string name="wind_suffix">km/h</string>
+    <string name="wind_suffix_m">m/s</string>
+    <string name="wind_suffix_f">mph</string>
     <string name="day_val">Sunday</string>
 
     <string name="fill_city_name">Please fill city field</string>
@@ -58,9 +61,9 @@
     <string name="smth_went_wrong">Something went wrong</string>
 
     <string-array name="temp_units">
-        <item>C°</item>
-        <item>F°</item>
-        <item>K°</item>
+        <item>°C</item>
+        <item>°F</item>
+        <item>°K</item>
     </string-array>
 
 </resources>

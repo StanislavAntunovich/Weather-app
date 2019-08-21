@@ -3,7 +3,7 @@ package ru.geekbrains.android1.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.geekbrains.android1.model.CurrentWeatherDataImpl;
+import ru.geekbrains.android1.rest.entities.CurrentWeatherDataImpl;
 
 public class DataSourceImp implements WeatherDataSource {
     private List<WeatherDetailsData> dataSource;
