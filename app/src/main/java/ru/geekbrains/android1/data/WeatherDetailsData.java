@@ -41,4 +41,8 @@ public interface WeatherDetailsData extends Serializable {
 
     void setWeatherCode(int code);
 
+    boolean isCurrentLocation();
+
+    void setIsCurrentLocation(boolean isCurrent);
+
 }

@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "city_weather.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 3; //TODO change to 1 on final merge
 
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);

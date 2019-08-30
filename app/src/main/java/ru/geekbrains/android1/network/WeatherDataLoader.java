@@ -18,6 +18,19 @@ public final class WeatherDataLoader {
                 .enqueue(callback);
     }
 
+    public static void loadCurrentWeather(double lat,
+                                          double lon,
+                                          String lang,
+                                          String units,
+                                          Callback<WeatherRequest> callback) {
+
+        WeatherApi api = WeatherRepo.getInstance().getApi();
+        api.getCurrentWeather(WeatherRepo.KEY, lang, lat, lon, units)
+                .enqueue(callback);
+    }
+
+
+
     public static void loadForecast(String city,
                                     String lang,
                                     String units,

@@ -86,4 +86,22 @@ public class DataSourceImp implements WeatherDataSource {
             }
         }
     }
+
+    @Override
+    public void addCurrentLocation(WeatherDetailsData data) {
+        data.setIsCurrentLocation(true);
+        if (!dataSource.isEmpty() && dataSource.get(0).isCurrentLocation()) {
+            this.dataSource.set(0, data);
+        } else {
+            this.dataSource.add(0, data);
+        }
+    }
+
+    @Override
+    public WeatherDetailsData getCurrentLocation() {
+        if (!dataSource.isEmpty() && dataSource.get(0).isCurrentLocation()) {
+            return dataSource.get(0);
+        }
+        return null;
+    }
 }

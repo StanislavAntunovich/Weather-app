@@ -27,6 +27,8 @@ public class CityWeatherTable {
     private static final String COLUMN_WEATHER_CODE = "weather_code";
     private static final String COLUMN_LAST_UPDATED = "last_updated";
     private static final String COLUMN_REMOVED = "removed";
+    private static final String COLUMN_IS_CURRENT_LOCATION = "is_current_location";
+
 
     static void createTable(SQLiteDatabase database) {
         database.execSQL("CREATE TABLE " + TABLE_NAME + " (" +
@@ -39,12 +41,15 @@ public class CityWeatherTable {
                 COLUMN_CONDITION + " TEXT," +
                 COLUMN_WEATHER_CODE + " INTEGER," +
                 COLUMN_LAST_UPDATED + " NUMERIC," +
-                COLUMN_REMOVED + " NUMERIC" +
+                COLUMN_REMOVED + " NUMERIC," +
+                COLUMN_IS_CURRENT_LOCATION + " NUMERIC" +
                 " );");
     }
 
+    // TODO: just in debug mode - change to normal update mode
     static void onUpgrade(SQLiteDatabase database) {
-        //will be in case of changing
+        database.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME + ";");
+        createTable(database);
     }
 
     public static void addCity(SQLiteDatabase database, WeatherDetailsData data) {
@@ -64,13 +69,15 @@ public class CityWeatherTable {
         values.put(COLUMN_WEATHER_CODE, data.getWeatherCode());
         values.put(COLUMN_LAST_UPDATED, data.getLastUpdated().getTime());
         values.put(COLUMN_REMOVED, FALSE);
+        int isCurrent = data.isCurrentLocation() ? TRUE : FALSE;
+        values.put(COLUMN_IS_CURRENT_LOCATION, isCurrent);
         return values;
     }
 
     public static void removeCity(SQLiteDatabase database, String city) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_REMOVED, TRUE);
-        database.update(TABLE_NAME, values, COLUMN_CITY + "=?", new String[] {city});
+        database.update(TABLE_NAME, values, COLUMN_CITY + "=?", new String[]{city});
     }
 
     public static List<WeatherDetailsData> getUsersCities(SQLiteDatabase database) {
@@ -86,8 +93,24 @@ public class CityWeatherTable {
         String cityName = data.getCity();
 
         database.update(TABLE_NAME, values,
-                COLUMN_CITY + "=?", new String[] {cityName});
+                COLUMN_CITY + "=?", new String[]{cityName});
 
+    }
+
+    public static void updateCurrentLocation(SQLiteDatabase database, WeatherDetailsData data) {
+        Cursor cursor = database.query(TABLE_NAME, null,
+                COLUMN_IS_CURRENT_LOCATION + "=? AND " + COLUMN_REMOVED + "=?",
+                new String[]{String.valueOf(TRUE), String.valueOf(FALSE)}, null, null, null);
+        List<WeatherDetailsData> oldData = getCitiesFromCursor(cursor);
+        ContentValues values = getContentValues(data);
+
+        if (!oldData.isEmpty()) {
+            database.update(TABLE_NAME, values,
+                    COLUMN_IS_CURRENT_LOCATION + "=?",
+                    new String[] {String.valueOf(TRUE)});
+        } else {
+            database.insert(TABLE_NAME, null, values);
+        }
     }
 
     private static List<WeatherDetailsData> getCitiesFromCursor(Cursor cursor) {
@@ -119,6 +142,7 @@ public class CityWeatherTable {
         int conditionIndex = cursor.getColumnIndex(COLUMN_CONDITION);
         int codeIndex = cursor.getColumnIndex(COLUMN_WEATHER_CODE);
         int lastUpdatedIndex = cursor.getColumnIndex(COLUMN_LAST_UPDATED);
+        int isCurrentLocation = cursor.getColumnIndex(COLUMN_IS_CURRENT_LOCATION);
 
         WeatherDetailsData data = new CurrentWeatherDataImpl();
         data.setCity(cursor.getString(cityIndex));
@@ -130,6 +154,8 @@ public class CityWeatherTable {
         data.setWeatherCode(cursor.getInt(codeIndex));
         Date updated = new Date(cursor.getLong(lastUpdatedIndex));
         data.setLastUpdated(updated);
+        boolean isCurrent = cursor.getInt(isCurrentLocation) == TRUE;
+        data.setIsCurrentLocation(isCurrent);
 
         return data;
     }

@@ -1,10 +1,16 @@
 package ru.geekbrains.android1;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
+import android.location.Criteria;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -38,6 +45,7 @@ import ru.geekbrains.android1.fragments.MainWeatherFragment;
 import ru.geekbrains.android1.fragments.SettingsFragment;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
 import ru.geekbrains.android1.presenters.SettingsPresenter;
+import ru.geekbrains.android1.rest.entities.CurrentWeatherDataImpl;
 import ru.geekbrains.android1.utils.SharedPrefsSettings;
 import ru.geekbrains.android1.view.SensorsView;
 
@@ -45,6 +53,11 @@ public class MainActivity extends AppCompatActivity {
     public static final String FORECAST = "FORECAST";
     public static final String DATA_SOURCE = "DATA_SOURCE";
     public static final String DETAILS = "DETAILS";
+    public static final String IS_CURRENT_ENABLED = "IS_CURRENT_LOCATION_ENABLED";
+
+    private static final long MIN_TIME_UPDATE = 900_000;
+    private static final float MIN_DISTANCE_UPDATE = 1000f;
+
 
     private WeatherDataSource dataSource;
     private CurrentInfoPresenter currentInfoPresenter;
@@ -55,13 +68,34 @@ public class MainActivity extends AppCompatActivity {
 
     private SQLiteDatabase database;
 
+    private boolean isLocationEnabled = false;
+    private static final int permissionRequest = 42;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Context context = getApplicationContext();
+        if (savedInstanceState == null) {
+            SharedPrefsSettings.readSettings(context);
+        }
+
+        if (database == null) {
+            initDB(context);
+        }
+
+        if (dataSource == null) {
+            dataSource = getDataSource();
+        }
+
         currentInfoPresenter = CurrentInfoPresenter.getInstance();
         settingsPresenter = SettingsPresenter.getInstance();
+
+        checkLocationPermissions();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -71,13 +105,63 @@ public class MainActivity extends AppCompatActivity {
         sensorsView.addSensor(Sensor.TYPE_AMBIENT_TEMPERATURE, getString(R.string.current_temperature));
         sensorsView.addSensor(Sensor.TYPE_RELATIVE_HUMIDITY, getString(R.string.current_humidity));
 
-        if (savedInstanceState == null) {
-            Context context = getApplicationContext();
-            initDB(context);
-            SharedPrefsSettings.readSettings(context);
-            dataSource = getDataSource();
-        }
 
+    }
+
+    private void checkLocationPermissions() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+            isLocationEnabled = true;
+            checkPlugNeeded();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, permissionRequest);
+        }
+    }
+
+    private void checkPlugNeeded() {
+        if (dataSource.isEmpty() || dataSource.getCurrentLocation() == null) {
+            WeatherDetailsData plug = makeCurrentLocPlug();
+            dataSource.addCurrentLocation(plug);
+            currentInfoPresenter.setCurrentIndex(0);
+            CityWeatherTable.updateCurrentLocation(database, plug);
+        }
+    }
+
+    private WeatherDetailsData makeCurrentLocPlug() {
+        WeatherDetailsData data = new CurrentWeatherDataImpl();
+        data.setCity("");
+        data.setWeatherCondition("");
+        return data;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == permissionRequest) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                isLocationEnabled = true;
+                checkPlugNeeded();
+                removeFragment(currentInfoPresenter.getFragmentsIndexes().pop().toString());
+                showMainFragments();
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void setLocationChangeListener(LocationListener locationChangeListener) {
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+
+        if (locationManager != null) {
+            String provider = locationManager.getBestProvider(criteria, true);
+            if (provider != null) {
+                locationManager.requestLocationUpdates(
+                        provider, MIN_TIME_UPDATE, MIN_DISTANCE_UPDATE, locationChangeListener
+                );
+            }
+        }
     }
 
     private WeatherDataSource getDataSource() {
@@ -108,12 +192,19 @@ public class MainActivity extends AppCompatActivity {
                 currentInfoPresenter.getFragmentsIndexes().peek() == R.id.nav_home) {
             showMainFragments();
         }
+
+        if (isLocationEnabled && locationListener != null) {
+            setLocationChangeListener(locationListener);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         sensorsView.unregisterListeners();
+        if (isLocationEnabled && locationManager != null) {
+            locationManager.removeUpdates(locationListener);
+        }
     }
 
     @Override
@@ -232,11 +323,16 @@ public class MainActivity extends AppCompatActivity {
         } else {
             navigationView.setCheckedItem(R.id.nav_home);
 
-            MainWeatherFragment mainFragment = MainWeatherFragment.create(dataSource);
+            MainWeatherFragment mainFragment = MainWeatherFragment.create(dataSource, isLocationEnabled);
             mainFragment.setDB(database);
             mainFragment.setListener(this::showForecast);
-            Fragment detailsFragment = DetailsWeatherFragment.create(dataSource.getData(currentIndex));
+            if (isLocationEnabled) {
+                locationListener = mainFragment.getLocationListener();
+                setLocationChangeListener(locationListener);
+            }
 
+
+            Fragment detailsFragment = DetailsWeatherFragment.create(dataSource.getData(currentIndex));
             startFragment(R.id.main_weather_container, mainFragment, String.valueOf(R.id.nav_home));
             startFragment(R.id.weather_details_container, detailsFragment, null);
 

@@ -20,4 +20,8 @@ public interface WeatherDataSource extends Serializable {
     void addData(String city);
 
     void removeData(String city);
+
+    void addCurrentLocation(WeatherDetailsData data);
+
+    WeatherDetailsData getCurrentLocation();
 }

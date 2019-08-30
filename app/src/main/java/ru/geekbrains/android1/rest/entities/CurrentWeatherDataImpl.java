@@ -34,6 +34,8 @@ public class CurrentWeatherDataImpl implements WeatherDetailsData {
 
     private ForecastData[] forecast;
 
+    private boolean isCurrentLocation;
+
     public String getCountry() {
         return country;
     }
@@ -114,6 +116,16 @@ public class CurrentWeatherDataImpl implements WeatherDetailsData {
     }
 
     @Override
+    public boolean isCurrentLocation() {
+        return isCurrentLocation;
+    }
+
+    @Override
+    public void setIsCurrentLocation(boolean isCurrent) {
+        this.isCurrentLocation = isCurrent;
+    }
+
+    @Override
     public int getWeatherCode() {
         return conditions.getWeatherCode();
     }
@@ -130,6 +142,8 @@ public class CurrentWeatherDataImpl implements WeatherDetailsData {
     public String getCurrentTemperature() {
         return String.valueOf(Math.round(temperature));
     }
+
+
 
 
 }
