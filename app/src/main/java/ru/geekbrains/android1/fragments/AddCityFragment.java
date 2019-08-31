@@ -166,9 +166,9 @@ public class AddCityFragment extends Fragment {
     }
 
     private void notifyDataUpdated() {
+        fixIndex();
         recycler.scrollToPosition(dataSource.size() - 1);
         adapter.notifyItemInserted(dataSource.size() - 1);
-        fixIndex();
     }
 
     public void setDB(SQLiteDatabase database) {
