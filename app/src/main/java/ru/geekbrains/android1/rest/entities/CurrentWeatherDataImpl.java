@@ -2,6 +2,8 @@ package ru.geekbrains.android1.rest.entities;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 import ru.geekbrains.android1.data.ForecastData;
 import ru.geekbrains.android1.data.WeatherDetailsData;
 
@@ -23,6 +25,9 @@ public class CurrentWeatherDataImpl implements WeatherDetailsData {
 
     @SerializedName("temp")
     private float temperature;
+
+    @SerializedName("ts")
+    private long lastUpdated;
 
     @SerializedName("weather")
     private WeatherCondition conditions;
@@ -48,8 +53,8 @@ public class CurrentWeatherDataImpl implements WeatherDetailsData {
     }
 
     @Override
-    public String getLastUpdated() {
-        return null;
+    public Date getLastUpdated() {
+        return new Date(lastUpdated);
     }
 
     @Override
@@ -63,8 +68,49 @@ public class CurrentWeatherDataImpl implements WeatherDetailsData {
     }
 
     @Override
+    public void setCurrentTemperature(int temperature) {
+        this.temperature = temperature;
+    }
+
+    @Override
     public void setForecast(ForecastData[] forecast) {
         this.forecast = forecast;
+    }
+
+    @Override
+    public void setHumidity(int humidity) {
+        this.humidity = humidity;
+    }
+
+    @Override
+    public void setPressure(float pressure) {
+        this.pressure = pressure;
+    }
+
+    @Override
+    public void setWind(float wind) {
+        this.wind = wind;
+    }
+
+    @Override
+    public void setWeatherCondition(String condition) {
+        if (this.conditions == null) {
+            conditions = new WeatherCondition();
+        }
+        conditions.setDescription(condition);
+    }
+
+    @Override
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated.getTime();
+    }
+
+    @Override
+    public void setWeatherCode(int code) {
+        if (this.conditions == null) {
+            conditions = new WeatherCondition();
+        }
+        conditions.setWeatherCode(code);
     }
 
     @Override
@@ -84,5 +130,6 @@ public class CurrentWeatherDataImpl implements WeatherDetailsData {
     public String getCurrentTemperature() {
         return String.valueOf(Math.round(temperature));
     }
+
 
 }

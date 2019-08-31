@@ -1,5 +1,6 @@
 package ru.geekbrains.android1.fragments;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +16,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Objects;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,6 +25,7 @@ import ru.geekbrains.android1.R;
 import ru.geekbrains.android1.adapters.CityListAdapter;
 import ru.geekbrains.android1.data.WeatherDataSource;
 import ru.geekbrains.android1.data.WeatherDetailsData;
+import ru.geekbrains.android1.database.CityWeatherTable;
 import ru.geekbrains.android1.network.WeatherDataLoader;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
 import ru.geekbrains.android1.presenters.SettingsPresenter;
@@ -44,6 +44,8 @@ public class AddCityFragment extends Fragment {
     private EditText editCity;
     private Button btnAddCity;
     private Button btnDone;
+
+    private SQLiteDatabase database;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,7 +94,9 @@ public class AddCityFragment extends Fragment {
             adapter.notifyItemRemoved(dataSource.getIndex(city));
             dataSource.removeData(city);
             fixIndex();
-            ((MainActivity) Objects.requireNonNull(getActivity())).savePreferences();
+            if (database != null) {
+                CityWeatherTable.removeCity(database, city);
+            }
         });
     }
 
@@ -129,6 +133,9 @@ public class AddCityFragment extends Fragment {
                     data.setCity(city);
                     dataSource.addData(data);
                     notifyDataUpdated();
+                    if (database != null) {
+                        CityWeatherTable.addCity(database, data);
+                    }
                 } else {
                     showToast(R.string.city_not_found);
                 }
@@ -160,7 +167,10 @@ public class AddCityFragment extends Fragment {
         recycler.scrollToPosition(dataSource.size() - 1);
         adapter.notifyItemInserted(dataSource.size() - 1);
         fixIndex();
-        ((MainActivity) Objects.requireNonNull(getActivity())).savePreferences();
+    }
+
+    public void setDB(SQLiteDatabase database) {
+        this.database = database;
     }
 
     public static AddCityFragment create(WeatherDataSource dataSource) {

@@ -1,6 +1,7 @@
 package ru.geekbrains.android1.fragments;
 
 import android.content.res.Configuration;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ import ru.geekbrains.android1.R;
 import ru.geekbrains.android1.adapters.CityWeatherAdapter;
 import ru.geekbrains.android1.data.WeatherDataSource;
 import ru.geekbrains.android1.data.WeatherDetailsData;
+import ru.geekbrains.android1.database.CityWeatherTable;
 import ru.geekbrains.android1.network.WeatherDataLoader;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
 import ru.geekbrains.android1.presenters.SettingsPresenter;
@@ -47,6 +49,8 @@ public class MainWeatherFragment extends Fragment {
 
     private List<ImageView> pagination;
     private CityWeatherAdapter adapter;
+
+    private SQLiteDatabase database;
 
 
     @Override
@@ -128,6 +132,9 @@ public class MainWeatherFragment extends Fragment {
                             data.setCity(city);
                             dataSource.setData(city, data);
                             notifyDataUpdated();
+                            if (database != null) {
+                                CityWeatherTable.updateCity(database, data);
+                            }
                         }
                     }
 
@@ -194,6 +201,10 @@ public class MainWeatherFragment extends Fragment {
         adapter.notifyDataSetChanged();
         changeData(indexPresenter.getCurrentIndex());
         ((MainActivity) Objects.requireNonNull(getActivity())).savePreferences();
+    }
+
+    public void setDB(SQLiteDatabase database) {
+        this.database = database;
     }
 
     public static MainWeatherFragment create(WeatherDataSource dataSource) {

@@ -1,12 +1,12 @@
 package ru.geekbrains.android1.data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public interface WeatherDetailsData extends Serializable {
 
     String getCity();
 
-    //TODO разбить на Цельсий и Фаренгейт
     String getCurrentTemperature();
 
     String getHumidity();
@@ -17,14 +17,28 @@ public interface WeatherDetailsData extends Serializable {
 
     String getWeatherCondition();
 
-    String getLastUpdated();
+    Date getLastUpdated();
 
     ForecastData[] getForecast();
 
+    int getWeatherCode();
+
     void setCity(String city);
+
+    void setCurrentTemperature(int temperature);
 
     void setForecast(ForecastData[] forecast);
 
-    int getWeatherCode();
+    void setHumidity(int humidity);
+
+    void setPressure(float pressure);
+
+    void setWind(float wind);
+
+    void setWeatherCondition(String condition);
+
+    void setLastUpdated(Date lastUpdated);
+
+    void setWeatherCode(int code);
 
 }
