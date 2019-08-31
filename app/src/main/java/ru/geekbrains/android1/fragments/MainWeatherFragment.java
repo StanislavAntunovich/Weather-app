@@ -149,7 +149,7 @@ public class MainWeatherFragment extends Fragment {
 
     private void sendUpdateRequest(String city) {
         int unitsIndex = settingsPresenter.getTempUnitIndex();
-        String units = UnitsConverter.getUntis(unitsIndex);
+        String units = UnitsConverter.getUnits(unitsIndex);
 
         final int index = indexPresenter.getCurrentIndex();
         String lang = settingsPresenter.getCurrentLocale().getLanguage();
@@ -164,7 +164,7 @@ public class MainWeatherFragment extends Fragment {
                             if (isLocationEnabled && dataSource.getData(index).isCurrentLocation()) {
                                 dataSource.addCurrentLocation(data);
                                 if (database != null) {
-                                    CityWeatherTable.updateCurrentLocation(database, data);
+                                    CityWeatherTable.setCurrentLocation(database, data);
                                 }
                             } else {
                                 data.setCity(city);
@@ -267,7 +267,7 @@ public class MainWeatherFragment extends Fragment {
         double lat = location.getLatitude();
 
         int unitsIndex = settingsPresenter.getTempUnitIndex();
-        String units = UnitsConverter.getUntis(unitsIndex);
+        String units = UnitsConverter.getUnits(unitsIndex);
         String lang = settingsPresenter.getCurrentLocale().getLanguage();
 
         WeatherDataLoader.loadCurrentWeather(lat, lon, lang, units,
@@ -280,7 +280,7 @@ public class MainWeatherFragment extends Fragment {
                             WeatherDetailsData data = response.body().getData()[0];
                             data.setIsCurrentLocation(true);
                             if (database != null) {
-                                CityWeatherTable.updateCurrentLocation(database, data);
+                                CityWeatherTable.setCurrentLocation(database, data);
                             }
                             dataSource.addCurrentLocation(data);
                             notifyDataUpdated();

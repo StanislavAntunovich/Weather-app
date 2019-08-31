@@ -122,7 +122,7 @@ public class AddCityFragment extends Fragment {
 
     private void sendRequest(String city) {
         int unitsIndex = settingsPresenter.getTempUnitIndex();
-        String units = UnitsConverter.getUntis(unitsIndex);
+        String units = UnitsConverter.getUnits(unitsIndex);
         String lang = settingsPresenter.getCurrentLocale().getLanguage();
 
         WeatherDataLoader.loadCurrentWeather(city, lang, units, new Callback<WeatherRequest>() {

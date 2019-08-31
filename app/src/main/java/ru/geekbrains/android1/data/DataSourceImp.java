@@ -3,8 +3,6 @@ package ru.geekbrains.android1.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.geekbrains.android1.rest.entities.CurrentWeatherDataImpl;
-
 public class DataSourceImp implements WeatherDataSource {
     private List<WeatherDetailsData> dataSource;
 
@@ -60,13 +58,6 @@ public class DataSourceImp implements WeatherDataSource {
     @Override
     public void addData(WeatherDetailsData weatherData) {
         dataSource.add(weatherData);
-    }
-
-    @Override
-    public void addData(String city) {
-        WeatherDetailsData data = new CurrentWeatherDataImpl();
-        data.setCity(city);
-        dataSource.add(data);
     }
 
     @Override

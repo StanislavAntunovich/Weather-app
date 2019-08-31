@@ -100,7 +100,7 @@ public class CityWeatherTable {
 
     }
 
-    public static void updateCurrentLocation(SQLiteDatabase database, WeatherDetailsData data) {
+    public static void setCurrentLocation(SQLiteDatabase database, WeatherDetailsData data) {
         Cursor cursor = database.query(TABLE_NAME, null,
                 COLUMN_IS_CURRENT_LOCATION + "=?",
                 new String[]{String.valueOf(TRUE)}, null, null, null);

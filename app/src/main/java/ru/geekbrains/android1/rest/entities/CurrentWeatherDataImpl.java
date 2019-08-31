@@ -11,9 +11,6 @@ public class CurrentWeatherDataImpl implements WeatherDetailsData {
     @SerializedName("city_name")
     private String city;
 
-    @SerializedName("country_code")
-    private String country;
-
     @SerializedName("pres")
     private float pressure;
 
@@ -35,10 +32,6 @@ public class CurrentWeatherDataImpl implements WeatherDetailsData {
     private ForecastData[] forecast;
 
     private boolean isCurrentLocation;
-
-    public String getCountry() {
-        return country;
-    }
 
     @Override
     public String getPressure() {
