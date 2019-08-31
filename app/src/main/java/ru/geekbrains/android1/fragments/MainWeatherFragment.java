@@ -168,7 +168,7 @@ public class MainWeatherFragment extends Fragment {
                                 }
                             } else {
                                 data.setCity(city);
-                                dataSource.setData(city, data);
+                                dataSource.setData(index, data);
                                 if (database != null) {
                                     CityWeatherTable.updateCity(database, data);
                                 }

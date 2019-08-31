@@ -30,6 +30,7 @@ import ru.geekbrains.android1.network.WeatherDataLoader;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
 import ru.geekbrains.android1.presenters.SettingsPresenter;
 import ru.geekbrains.android1.rest.entities.WeatherRequest;
+import ru.geekbrains.android1.utils.Keyboard;
 import ru.geekbrains.android1.utils.UnitsConverter;
 
 public class AddCityFragment extends Fragment {
@@ -113,6 +114,7 @@ public class AddCityFragment extends Fragment {
 
     private void done(View view) {
         fixIndex();
+        Keyboard.hideKeyboard(getActivity());
         if (getActivity() != null) {
             getActivity().onBackPressed();
         }

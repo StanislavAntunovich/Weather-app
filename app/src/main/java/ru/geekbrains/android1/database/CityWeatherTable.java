@@ -77,14 +77,16 @@ public class CityWeatherTable {
     public static void removeCity(SQLiteDatabase database, String city) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_REMOVED, TRUE);
-        database.update(TABLE_NAME, values, COLUMN_CITY + "=?", new String[]{city});
+        database.update(TABLE_NAME, values,
+                COLUMN_CITY + "=? AND " + COLUMN_IS_CURRENT_LOCATION + "=?",
+                new String[]{city, String.valueOf(FALSE)});
     }
 
     public static List<WeatherDetailsData> getUsersCities(SQLiteDatabase database) {
         Cursor cursor = database.query(TABLE_NAME, null,
                 COLUMN_REMOVED + "=" + FALSE,
                 null, null, null,
-                COLUMN_ID + " ASC");
+                COLUMN_IS_CURRENT_LOCATION + " DESC");
         return getCitiesFromCursor(cursor);
     }
 
@@ -93,14 +95,15 @@ public class CityWeatherTable {
         String cityName = data.getCity();
 
         database.update(TABLE_NAME, values,
-                COLUMN_CITY + "=?", new String[]{cityName});
+                COLUMN_CITY + "=? AND " + COLUMN_IS_CURRENT_LOCATION + "=?",
+                new String[]{cityName, String.valueOf(FALSE)});
 
     }
 
     public static void updateCurrentLocation(SQLiteDatabase database, WeatherDetailsData data) {
         Cursor cursor = database.query(TABLE_NAME, null,
-                COLUMN_IS_CURRENT_LOCATION + "=? AND " + COLUMN_REMOVED + "=?",
-                new String[]{String.valueOf(TRUE), String.valueOf(FALSE)}, null, null, null);
+                COLUMN_IS_CURRENT_LOCATION + "=?",
+                new String[]{String.valueOf(TRUE)}, null, null, null);
         List<WeatherDetailsData> oldData = getCitiesFromCursor(cursor);
         ContentValues values = getContentValues(data);
 

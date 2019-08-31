@@ -28,12 +28,6 @@ public class DataSourceImp implements WeatherDataSource {
     }
 
     @Override
-    public void setData(String city, WeatherDetailsData data) {
-        int index = getIndex(city);
-        dataSource.set(index, data);
-    }
-
-    @Override
     public void setData(int cityIndex, WeatherDetailsData data) {
         dataSource.set(cityIndex, data);
     }
@@ -46,7 +40,7 @@ public class DataSourceImp implements WeatherDataSource {
     @Override
     public int getIndex(String city) {
         for (int i = 0; i < dataSource.size(); i++) {
-            if (city.equals(dataSource.get(i).getCity())) {
+            if (city.equals(dataSource.get(i).getCity()) && !dataSource.get(i).isCurrentLocation()) {
                 return i;
             }
         }
@@ -80,7 +74,7 @@ public class DataSourceImp implements WeatherDataSource {
         int size = size();
         for (int i = 0; i < size; i++) {
             WeatherDetailsData data = dataSource.get(i);
-            if (city.equals(data.getCity())) {
+            if (city.equals(data.getCity()) && !data.isCurrentLocation()) {
                 dataSource.remove(i);
                 return;
             }
@@ -90,17 +84,22 @@ public class DataSourceImp implements WeatherDataSource {
     @Override
     public void addCurrentLocation(WeatherDetailsData data) {
         data.setIsCurrentLocation(true);
-        if (!dataSource.isEmpty() && dataSource.get(0).isCurrentLocation()) {
-            this.dataSource.set(0, data);
-        } else {
-            this.dataSource.add(0, data);
+        int size = dataSource.size();
+        for (int i = 0; i < size; i++) {
+            if (dataSource.get(i).isCurrentLocation()) {
+                dataSource.set(i, data);
+                return;
+            }
         }
+        dataSource.add(0, data);
     }
 
     @Override
     public WeatherDetailsData getCurrentLocation() {
-        if (!dataSource.isEmpty() && dataSource.get(0).isCurrentLocation()) {
-            return dataSource.get(0);
+        for (WeatherDetailsData data : dataSource) {
+            if (data.isCurrentLocation()) {
+                return data;
+            }
         }
         return null;
     }

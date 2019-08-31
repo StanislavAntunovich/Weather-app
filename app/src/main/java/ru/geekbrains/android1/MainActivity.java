@@ -55,7 +55,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String DETAILS = "DETAILS";
     public static final String IS_CURRENT_ENABLED = "IS_CURRENT_LOCATION_ENABLED";
 
-    private static final long MIN_TIME_UPDATE = 900_000;
+    //TODO too short (just for debug) - change on final push to 10 mins
+    private static final long MIN_TIME_UPDATE = 30_000;
     private static final float MIN_DISTANCE_UPDATE = 1000f;
 
 
@@ -125,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
             WeatherDetailsData plug = makeCurrentLocPlug();
             dataSource.addCurrentLocation(plug);
             currentInfoPresenter.setCurrentIndex(0);
-            CityWeatherTable.updateCurrentLocation(database, plug);
         }
     }
 
