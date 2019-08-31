@@ -74,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private LocationListener locationListener;
 
+    private String provider;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -109,66 +111,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void checkLocationPermissions() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED) {
-            isLocationEnabled = true;
-            checkPlugNeeded();
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, permissionRequest);
-        }
-    }
-
-    private void checkPlugNeeded() {
-        if (dataSource.isEmpty() || dataSource.getCurrentLocation() == null) {
-            WeatherDetailsData plug = makeCurrentLocPlug();
-            dataSource.addCurrentLocation(plug);
-            currentInfoPresenter.setCurrentIndex(0);
-        }
-    }
-
-    private WeatherDetailsData makeCurrentLocPlug() {
-        WeatherDetailsData data = new CurrentWeatherDataImpl();
-        data.setCity("");
-        data.setWeatherCondition("");
-        return data;
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == permissionRequest) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 isLocationEnabled = true;
-                checkPlugNeeded();
+                makeProvider();
                 removeFragment(currentInfoPresenter.getFragmentsIndexes().pop().toString());
                 showMainFragments();
             }
         }
-    }
-
-    @SuppressLint("MissingPermission")
-    private void setLocationChangeListener(LocationListener locationChangeListener) {
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-
-        if (locationManager != null) {
-            String provider = locationManager.getBestProvider(criteria, true);
-            if (provider != null) {
-                locationManager.requestLocationUpdates(
-                        provider, MIN_TIME_UPDATE, MIN_DISTANCE_UPDATE, locationChangeListener
-                );
-            }
-        }
-    }
-
-    private WeatherDataSource getDataSource() {
-        List<WeatherDetailsData> data = CityWeatherTable.getUsersCities(database);
-        WeatherDataSource dataSource = new DataSourceImp();
-        dataSource.setAll(data);
-        return dataSource;
     }
 
     @Override
@@ -256,6 +208,74 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void checkLocationPermissions() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+            isLocationEnabled = true;
+            makeProvider();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, permissionRequest);
+        }
+    }
+
+    private void makeProvider() {
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+
+        if (locationManager != null) {
+            provider = locationManager.getBestProvider(criteria, true);
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void setLocationChangeListener(LocationListener locationChangeListener) {
+        if (provider != null) {
+            locationManager.requestLocationUpdates(
+                    provider, MIN_TIME_UPDATE, MIN_DISTANCE_UPDATE, locationChangeListener
+            );
+        }
+    }
+
+    private WeatherDataSource getDataSource() {
+        List<WeatherDetailsData> data = CityWeatherTable.getUsersCities(database);
+        WeatherDataSource dataSource = new DataSourceImp();
+        dataSource.setAll(data);
+        return dataSource;
+    }
+
+    private boolean checkServicesEnabled() {
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+
+        boolean gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean net_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if (!gps_enabled && !net_enabled) {
+            showToast(getString(R.string.location_disabled));
+        }
+
+        return gps_enabled || net_enabled;
+    }
+
+    private void checkPlugNeeded() {
+        if (checkServicesEnabled() &&
+                (dataSource.isEmpty() || dataSource.getCurrentLocation() == null)) {
+            WeatherDetailsData plug = makeCurrentLocPlug();
+            dataSource.addCurrentLocation(plug);
+            currentInfoPresenter.setCurrentIndex(0);
+        }
+    }
+
+    private WeatherDetailsData makeCurrentLocPlug() {
+        WeatherDetailsData data = new CurrentWeatherDataImpl();
+        data.setCity("");
+        data.setWeatherCondition("");
+        return data;
+    }
+
     private void initDB(Context context) {
         database = new DBHelper(context).getWritableDatabase();
     }
@@ -315,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
         sensorsView.registerListeners();
         currentInfoPresenter.getFragmentsIndexes().clear();
         currentInfoPresenter.getFragmentsIndexes().push(R.id.nav_home);
-
+        checkPlugNeeded();
         int currentIndex = currentInfoPresenter.getCurrentIndex();
 
         if (currentIndex < 0 || dataSource.isEmpty()) {

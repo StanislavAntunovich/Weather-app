@@ -59,6 +59,7 @@
     <string name="current_temperature">Current Temperature:</string>
 
     <string name="smth_went_wrong">Something went wrong</string>
+    <string name="location_disabled">Location service disabled</string>
 
     <string-array name="temp_units">
         <item>°C</item>
