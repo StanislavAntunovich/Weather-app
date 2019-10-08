@@ -18,11 +18,11 @@ class WeatherCondition implements Serializable {
         return description;
     }
 
-    public void setWeatherCode(int weatherCode) {
+    void setWeatherCode(int weatherCode) {
         this.weatherCode = weatherCode;
     }
 
-    public void setDescription(String description) {
+    void setDescription(String description) {
         this.description = description;
     }
 }

@@ -8,7 +8,7 @@ public class WeatherRepo {
     private static final String BASE_URL = "https://api.weatherbit.io/v2.0/";
     public static final String CURRENT_WEATHER = "current";
     public static final String FORECAST = "forecast/daily";
-    public static final String KEY = "b0e94b3031294a12b5958fd1401b2ce4";
+    public static final String KEY = "e32f400fae38481c879fbad93957e183";
 
     private static WeatherRepo instance;
 

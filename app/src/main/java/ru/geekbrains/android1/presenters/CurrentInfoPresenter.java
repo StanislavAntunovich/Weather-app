@@ -20,7 +20,7 @@ public class CurrentInfoPresenter {
     }
 
     private CurrentInfoPresenter() {
-        this.currentIndex = 0;
+        this.currentIndex = -1;
         this.fragmentsIndexes = new Stack<>();
     }
 

@@ -2,6 +2,8 @@ package ru.geekbrains.android1.fragments;
 
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +54,30 @@ public class MainWeatherFragment extends Fragment {
 
     private SQLiteDatabase database;
 
+    private boolean isLocationEnabled = false;
+
+    private LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            updateCurrentLocation(location);
+            notifyDataUpdated();
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+            /* empty */
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+            /* empty */
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+            /* empty */
+        }
+    };
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -74,10 +100,13 @@ public class MainWeatherFragment extends Fragment {
         if (getArguments() != null) {
             dataSource = (WeatherDataSource) getArguments()
                     .getSerializable(MainActivity.DATA_SOURCE);
+            setRecycler(view);
+
+            isLocationEnabled = getArguments().getBoolean(MainActivity.IS_CURRENT_ENABLED);
+
         }
         paginationLayout = view.findViewById(R.id.ll_pagination);
 
-        setRecycler(view);
         makePagination();
         sendUpdateRequest(dataSource.getData(indexPresenter.getCurrentIndex()).getCity());
 
@@ -92,7 +121,8 @@ public class MainWeatherFragment extends Fragment {
         );
 
         RecyclerView recycler = view.findViewById(R.id.recycler_main_weather);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayout.HORIZONTAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(),
+                RecyclerView.HORIZONTAL, false);
         recycler.setLayoutManager(layoutManager);
 
         recycler.setAdapter(adapter);
@@ -107,8 +137,9 @@ public class MainWeatherFragment extends Fragment {
                             index != indexPresenter.getCurrentIndex()) {
                         changePagePosition(indexPresenter.getCurrentIndex(), index);
                         indexPresenter.setCurrentIndex(index);
-                        changeData(index);
+
                         sendUpdateRequest(dataSource.getData(index).getCity());
+                        changeData(index);
                     }
                 }
             }
@@ -118,8 +149,9 @@ public class MainWeatherFragment extends Fragment {
 
     private void sendUpdateRequest(String city) {
         int unitsIndex = settingsPresenter.getTempUnitIndex();
-        String units = UnitsConverter.getUntis(unitsIndex);
+        String units = UnitsConverter.getUnits(unitsIndex);
 
+        final int index = indexPresenter.getCurrentIndex();
         String lang = settingsPresenter.getCurrentLocale().getLanguage();
         WeatherDataLoader.loadCurrentWeather(city, lang, units,
                 new Callback<WeatherRequest>() {
@@ -129,12 +161,19 @@ public class MainWeatherFragment extends Fragment {
                                            Response<WeatherRequest> response) {
                         if (response.body() != null && response.isSuccessful()) {
                             WeatherDetailsData data = response.body().getData()[0];
-                            data.setCity(city);
-                            dataSource.setData(city, data);
-                            notifyDataUpdated();
-                            if (database != null) {
-                                CityWeatherTable.updateCity(database, data);
+                            if (isLocationEnabled && dataSource.getData(index).isCurrentLocation()) {
+                                dataSource.addCurrentLocation(data);
+                                if (database != null) {
+                                    CityWeatherTable.setCurrentLocation(database, data);
+                                }
+                            } else {
+                                data.setCity(city);
+                                dataSource.setData(index, data);
+                                if (database != null) {
+                                    CityWeatherTable.updateCity(database, data);
+                                }
                             }
+                            notifyDataUpdated();
                         }
                     }
 
@@ -151,20 +190,50 @@ public class MainWeatherFragment extends Fragment {
         pagination = new ArrayList<>();
         paginationLayout.removeAllViewsInLayout();
         int count = dataSource.size();
-        for (int i = 0; i < count; i++) {
+        int startIndex = 0;
+        if (isLocationEnabled) {
+            startIndex = 1;
+            ImageView im = new ImageView(getContext());
+            if (indexPresenter.getCurrentIndex() == 0) {
+                im.setImageResource(R.drawable.ic_location_current);
+            } else {
+                im.setImageResource(R.drawable.ic_location);
+            }
+            paginationLayout.addView(im);
+            pagination.add(im);
+        }
+        for (int i = startIndex; i < count; i++) {
             ImageView im = new ImageView(getContext());
             im.setImageResource(R.drawable.ic_pagination);
             paginationLayout.addView(im);
             pagination.add(im);
         }
-        pagination.get(indexPresenter.getCurrentIndex())
-                .setImageResource(R.drawable.ic_pagination_current);
+        int currentIndex = indexPresenter.getCurrentIndex();
+        int resToSet;
+        if (isLocationEnabled && currentIndex == 0) {
+            resToSet = R.drawable.ic_location_current;
+        } else {
+            resToSet = R.drawable.ic_pagination_current;
+        }
+        pagination.get(currentIndex)
+                .setImageResource(resToSet);
     }
 
     private void changePagePosition(int previousIndex, int newIndex) {
-        pagination.get(previousIndex).setImageResource(R.drawable.ic_pagination);
-        pagination.get(newIndex).setImageResource(R.drawable.ic_pagination_current);
+        boolean isPreviousLocation = isLocationEnabled && previousIndex == 0;
+        boolean isNewIsLocation = isLocationEnabled && newIndex == 0;
 
+        if (isPreviousLocation) {
+            pagination.get(previousIndex).setImageResource(R.drawable.ic_location);
+        } else {
+            pagination.get(previousIndex).setImageResource(R.drawable.ic_pagination);
+        }
+
+        if (isNewIsLocation) {
+            pagination.get(newIndex).setImageResource(R.drawable.ic_location_current);
+        } else {
+            pagination.get(newIndex).setImageResource(R.drawable.ic_pagination_current);
+        }
     }
 
     private void changeData(int index) {
@@ -193,6 +262,40 @@ public class MainWeatherFragment extends Fragment {
         }
     }
 
+    private void updateCurrentLocation(Location location) {
+        double lon = location.getLongitude();
+        double lat = location.getLatitude();
+
+        int unitsIndex = settingsPresenter.getTempUnitIndex();
+        String units = UnitsConverter.getUnits(unitsIndex);
+        String lang = settingsPresenter.getCurrentLocale().getLanguage();
+
+        WeatherDataLoader.loadCurrentWeather(lat, lon, lang, units,
+                new Callback<WeatherRequest>() {
+                    @Override
+                    @EverythingIsNonNull
+                    public void onResponse(Call<WeatherRequest> call,
+                                           Response<WeatherRequest> response) {
+                        if (response.body() != null && response.isSuccessful()) {
+                            WeatherDetailsData data = response.body().getData()[0];
+                            data.setIsCurrentLocation(true);
+                            if (database != null) {
+                                CityWeatherTable.setCurrentLocation(database, data);
+                            }
+                            dataSource.addCurrentLocation(data);
+                            notifyDataUpdated();
+                        }
+                    }
+
+                    @Override
+                    @EverythingIsNonNull
+                    public void onFailure(Call<WeatherRequest> call, Throwable t) {
+                        Toast.makeText(getContext(), R.string.network_error,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
     public void setListener(ForecastListener listener) {
         this.listener = listener;
     }
@@ -200,16 +303,24 @@ public class MainWeatherFragment extends Fragment {
     private void notifyDataUpdated() {
         adapter.notifyDataSetChanged();
         changeData(indexPresenter.getCurrentIndex());
-        ((MainActivity) Objects.requireNonNull(getActivity())).savePreferences();
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null) {
+            mainActivity.savePreferences();
+        }
     }
 
     public void setDB(SQLiteDatabase database) {
         this.database = database;
     }
 
-    public static MainWeatherFragment create(WeatherDataSource dataSource) {
+    public LocationListener getLocationListener() {
+        return this.locationListener;
+    }
+
+    public static MainWeatherFragment create(WeatherDataSource dataSource, boolean isCurrentEnabled) {
         MainWeatherFragment fragment = new MainWeatherFragment();
         Bundle args = new Bundle();
+        args.putBoolean(MainActivity.IS_CURRENT_ENABLED, isCurrentEnabled);
         args.putSerializable(MainActivity.DATA_SOURCE, dataSource);
         fragment.setArguments(args);
         return fragment;

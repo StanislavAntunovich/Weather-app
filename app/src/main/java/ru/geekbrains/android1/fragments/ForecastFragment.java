@@ -65,7 +65,7 @@ public class ForecastFragment extends Fragment {
 
     private void sendRequest(String city, String lang) {
         int unitsIndex = settingsPresenter.getTempUnitIndex();
-        String units = UnitsConverter.getUntis(unitsIndex);
+        String units = UnitsConverter.getUnits(unitsIndex);
 
         WeatherDataLoader.loadForecast(city, lang, units, 7,
                 new Callback<ForecastRequest>() {

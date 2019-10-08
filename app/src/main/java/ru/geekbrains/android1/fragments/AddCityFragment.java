@@ -30,6 +30,7 @@ import ru.geekbrains.android1.network.WeatherDataLoader;
 import ru.geekbrains.android1.presenters.CurrentInfoPresenter;
 import ru.geekbrains.android1.presenters.SettingsPresenter;
 import ru.geekbrains.android1.rest.entities.WeatherRequest;
+import ru.geekbrains.android1.utils.Keyboard;
 import ru.geekbrains.android1.utils.UnitsConverter;
 
 public class AddCityFragment extends Fragment {
@@ -113,6 +114,7 @@ public class AddCityFragment extends Fragment {
 
     private void done(View view) {
         fixIndex();
+        Keyboard.hideKeyboard(getActivity());
         if (getActivity() != null) {
             getActivity().onBackPressed();
         }
@@ -120,7 +122,7 @@ public class AddCityFragment extends Fragment {
 
     private void sendRequest(String city) {
         int unitsIndex = settingsPresenter.getTempUnitIndex();
-        String units = UnitsConverter.getUntis(unitsIndex);
+        String units = UnitsConverter.getUnits(unitsIndex);
         String lang = settingsPresenter.getCurrentLocale().getLanguage();
 
         WeatherDataLoader.loadCurrentWeather(city, lang, units, new Callback<WeatherRequest>() {
@@ -164,9 +166,9 @@ public class AddCityFragment extends Fragment {
     }
 
     private void notifyDataUpdated() {
+        fixIndex();
         recycler.scrollToPosition(dataSource.size() - 1);
         adapter.notifyItemInserted(dataSource.size() - 1);
-        fixIndex();
     }
 
     public void setDB(SQLiteDatabase database) {

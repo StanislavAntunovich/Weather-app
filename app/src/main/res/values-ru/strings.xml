@@ -62,6 +62,7 @@
     <string name="current_temperature">Текущая температура:</string>
 
     <string name="smth_went_wrong">Что-то пошло не так</string>
+    <string name="location_disabled">Сервис определения местоположения отключен</string>
 
     <string-array name="temp_units">
         <item>°C</item>

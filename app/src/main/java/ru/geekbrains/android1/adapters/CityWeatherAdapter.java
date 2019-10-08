@@ -91,7 +91,7 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
     }
 
 
-    public static class CityWeatherViewHolder extends RecyclerView.ViewHolder {
+    static class CityWeatherViewHolder extends RecyclerView.ViewHolder {
         private TextView txtCity;
         private TextView txtTemperature;
         private TextView txtTempSuffix;
@@ -120,24 +120,5 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
             });
         }
 
-        public TextView getTxtCity() {
-            return txtCity;
-        }
-
-        public TextView getTxtTemperature() {
-            return txtTemperature;
-        }
-
-        public TextView getTxtWeatherCondition() {
-            return txtWeatherCondition;
-        }
-
-        public TextView getTxtDate() {
-            return txtDate;
-        }
-
-        public TextView getTxtTempSuffix() {
-            return txtTempSuffix;
-        }
     }
 }

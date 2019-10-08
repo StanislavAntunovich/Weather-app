@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import ru.geekbrains.android1.R;
 import ru.geekbrains.android1.data.WeatherDataSource;
+import ru.geekbrains.android1.data.WeatherDetailsData;
 
 public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.ViewHolder> {
 
@@ -31,6 +32,12 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+        WeatherDetailsData data = dataSource.getData(i);
+        if (data.isCurrentLocation()) {
+            viewHolder.setGone();
+        } else {
+            viewHolder.setVisible();
+        }
         viewHolder.txtCity.setText(dataSource.getData(i).getCity());
         if (listener != null) {
             viewHolder.setOnClickListener(listener);
@@ -54,11 +61,21 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.ViewHo
     static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtCity;
         private ImageView btnRemove;
+        private View view;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtCity = itemView.findViewById(R.id.txt_city_name);
             btnRemove = itemView.findViewById(R.id.btn_remove_city);
+            view = itemView;
+        }
+
+        void setGone() {
+            view.setVisibility(View.GONE);
+        }
+
+        void setVisible() {
+            view.setVisibility(View.VISIBLE);
         }
 
         void setOnClickListener(OnImgButtonClickListener listener) {

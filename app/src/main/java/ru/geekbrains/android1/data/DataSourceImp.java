@@ -3,8 +3,6 @@ package ru.geekbrains.android1.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.geekbrains.android1.rest.entities.CurrentWeatherDataImpl;
-
 public class DataSourceImp implements WeatherDataSource {
     private List<WeatherDetailsData> dataSource;
 
@@ -28,12 +26,6 @@ public class DataSourceImp implements WeatherDataSource {
     }
 
     @Override
-    public void setData(String city, WeatherDetailsData data) {
-        int index = getIndex(city);
-        dataSource.set(index, data);
-    }
-
-    @Override
     public void setData(int cityIndex, WeatherDetailsData data) {
         dataSource.set(cityIndex, data);
     }
@@ -46,7 +38,7 @@ public class DataSourceImp implements WeatherDataSource {
     @Override
     public int getIndex(String city) {
         for (int i = 0; i < dataSource.size(); i++) {
-            if (city.equals(dataSource.get(i).getCity())) {
+            if (city.equals(dataSource.get(i).getCity()) && !dataSource.get(i).isCurrentLocation()) {
                 return i;
             }
         }
@@ -69,21 +61,37 @@ public class DataSourceImp implements WeatherDataSource {
     }
 
     @Override
-    public void addData(String city) {
-        WeatherDetailsData data = new CurrentWeatherDataImpl();
-        data.setCity(city);
-        dataSource.add(data);
-    }
-
-    @Override
     public void removeData(String city) {
         int size = size();
         for (int i = 0; i < size; i++) {
             WeatherDetailsData data = dataSource.get(i);
-            if (city.equals(data.getCity())) {
+            if (city.equals(data.getCity()) && !data.isCurrentLocation()) {
                 dataSource.remove(i);
                 return;
             }
         }
+    }
+
+    @Override
+    public void addCurrentLocation(WeatherDetailsData data) {
+        data.setIsCurrentLocation(true);
+        int size = dataSource.size();
+        for (int i = 0; i < size; i++) {
+            if (dataSource.get(i).isCurrentLocation()) {
+                dataSource.set(i, data);
+                return;
+            }
+        }
+        dataSource.add(0, data);
+    }
+
+    @Override
+    public WeatherDetailsData getCurrentLocation() {
+        for (WeatherDetailsData data : dataSource) {
+            if (data.isCurrentLocation()) {
+                return data;
+            }
+        }
+        return null;
     }
 }

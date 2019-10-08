@@ -11,9 +11,6 @@ public class CurrentWeatherDataImpl implements WeatherDetailsData {
     @SerializedName("city_name")
     private String city;
 
-    @SerializedName("country_code")
-    private String country;
-
     @SerializedName("pres")
     private float pressure;
 
@@ -34,9 +31,7 @@ public class CurrentWeatherDataImpl implements WeatherDetailsData {
 
     private ForecastData[] forecast;
 
-    public String getCountry() {
-        return country;
-    }
+    private boolean isCurrentLocation;
 
     @Override
     public String getPressure() {
@@ -114,6 +109,16 @@ public class CurrentWeatherDataImpl implements WeatherDetailsData {
     }
 
     @Override
+    public boolean isCurrentLocation() {
+        return isCurrentLocation;
+    }
+
+    @Override
+    public void setIsCurrentLocation(boolean isCurrent) {
+        this.isCurrentLocation = isCurrent;
+    }
+
+    @Override
     public int getWeatherCode() {
         return conditions.getWeatherCode();
     }
@@ -130,6 +135,8 @@ public class CurrentWeatherDataImpl implements WeatherDetailsData {
     public String getCurrentTemperature() {
         return String.valueOf(Math.round(temperature));
     }
+
+
 
 
 }
